@@ -21,10 +21,12 @@ public class Equipment extends BaseEntity<Integer> {
 
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "equipment_id")
     private List<Property> properties;
 
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "equipment_id")
     private List<Part> parts;
 
     @ToString.Exclude
