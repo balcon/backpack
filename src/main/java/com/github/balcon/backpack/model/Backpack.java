@@ -12,11 +12,13 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 @Getter
 @ToString
 public class Backpack extends BaseEntity<Integer> {
     private String name;
 
+    @Builder.Default
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Equipment> equipment = new ArrayList<>();

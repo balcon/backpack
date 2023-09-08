@@ -11,9 +11,9 @@ import java.util.Map;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 @Getter
 @ToString
-@Builder
 public class Equipment extends BaseEntity<Integer> {
     private String name;
     private String manufacturer;
