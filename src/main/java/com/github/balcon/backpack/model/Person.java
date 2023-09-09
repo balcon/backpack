@@ -12,15 +12,20 @@ import java.util.List;
 @SuperBuilder
 @Getter
 @ToString(callSuper = true)
-public class Backpack extends BaseEntity<Integer> {
+public class Person extends BaseEntity<Integer> {
+    private String email;
     private String name;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Builder.Default
     @ToString.Exclude
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "owner")
     private List<Equipment> equipment = new ArrayList<>();
 
+    @Builder.Default
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Person owner;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "owner")
+    private List<Backpack> backpacks = new ArrayList<>();
 }

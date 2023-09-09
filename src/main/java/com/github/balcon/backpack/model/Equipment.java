@@ -35,8 +35,12 @@ public class Equipment extends BaseEntity<Integer> {
     @JoinColumn(name = "equipment_id")
     private List<Part> parts = new ArrayList<>();
 
-    @Builder.Default // TODO: 05.09.2023 need init?
+    @Builder.Default
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "equipment")
     private List<Backpack> backpacks = new ArrayList<>();
+
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Person owner;
 }
