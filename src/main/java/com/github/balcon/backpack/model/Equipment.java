@@ -2,6 +2,7 @@ package com.github.balcon.backpack.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,10 +11,9 @@ import java.util.Map;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
+@SuperBuilder
 @Getter
-@ToString
+@ToString(callSuper = true)
 public class Equipment extends BaseEntity<Integer> {
     private String name;
     private String manufacturer;

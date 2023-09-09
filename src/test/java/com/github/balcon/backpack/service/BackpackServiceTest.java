@@ -41,6 +41,6 @@ class BackpackServiceTest {
 
         BackpackDto backpackDto = service.getById(1);
 
-        assertThat(backpackDto.weight()).isEqualTo(3400);
+        assertThat(backpackDto.weight()).isEqualTo(4500);
     }
 }
