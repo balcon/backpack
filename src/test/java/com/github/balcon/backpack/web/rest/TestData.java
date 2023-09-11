@@ -10,18 +10,18 @@ import java.util.List;
 
 @UtilityClass
 public class TestData {
-    private static final int USER_TENT_ID = 1;
-    private static final int USER_SLEEPING_BAG_ID = 2;
-    private static final int USER_SLEEPING_PAD_ID = 3;
-    private static final int ADMIN_TENT_ID = 4;
-    private static final int ADMIN_SLEEPING_BAG_ID = 5;
+    public static final int USER_TENT_ID = 1;
+    public static final int USER_SLEEPING_BAG_ID = 2;
+    public static final int USER_SLEEPING_PAD_ID = 3;
+    public static final int ADMIN_TENT_ID = 4;
+    public static final int ADMIN_SLEEPING_BAG_ID = 5;
 
-    private static final int USER_BACKPACK_1_ID = 50;
-    private static final int USER_BACKPACK_2_ID = 51;
-    private static final int ADMIN_BACKPACK_1_ID = 52;
+    public static final int USER_BACKPACK_1_ID = 50;
+    public static final int USER_BACKPACK_2_ID = 51;
+    public static final int ADMIN_BACKPACK_1_ID = 52;
 
-    private static final int ADMIN_ID = 100;
-    private static final int USER_ID = 101;
+    public static final int ADMIN_ID = 100;
+    public static final int USER_ID = 101;
 
     public Person admin = Person.builder()
             .id(ADMIN_ID)

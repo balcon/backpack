@@ -1,3 +1,7 @@
+INSERT INTO person (id, email, name, role)
+VALUES (100, 'admin@mail.ru', 'Admin', 'ADMIN'),
+       (101, 'user@mail.ru', 'User', 'USER');
+
 INSERT INTO equipment (id, name, manufacturer, weight, owner_id)
 VALUES (1, 'Huba Tour 2', 'MSR', 2500, 101),
        (2, 'Explorer -20', 'Red Fox', 1500, 101),
@@ -18,8 +22,3 @@ VALUES (50, 2),
        (51, 3),
        (52, 4),
        (52, 5);
-
-INSERT INTO person (id, email, name, role)
-VALUES (100, 'admin@mail.ru', 'Admin', 'ADMIN'),
-       (101, 'user@mail.ru', 'User', 'USER');
-

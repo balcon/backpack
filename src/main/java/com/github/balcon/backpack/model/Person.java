@@ -17,7 +17,7 @@ public class Person extends BaseEntity<Integer> {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.USER;
 
     @Builder.Default
     @ToString.Exclude
