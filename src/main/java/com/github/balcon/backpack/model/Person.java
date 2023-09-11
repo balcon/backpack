@@ -16,6 +16,7 @@ public class Person extends BaseEntity<Integer> {
     private String email;
     private String name;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
