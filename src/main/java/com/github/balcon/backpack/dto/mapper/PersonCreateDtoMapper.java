@@ -1,11 +1,8 @@
-package com.github.balcon.backpack.dto.mapper.person;
+package com.github.balcon.backpack.dto.mapper;
 
-import com.github.balcon.backpack.dto.mapper.Mapper;
-import com.github.balcon.backpack.dto.person.PersonCreateDto;
+import com.github.balcon.backpack.dto.PersonCreateDto;
 import com.github.balcon.backpack.model.Person;
-import org.springframework.stereotype.Component;
 
-@Component
 public class PersonCreateDtoMapper implements Mapper<PersonCreateDto, Person> {
     @Override
     public Person map(PersonCreateDto person) {

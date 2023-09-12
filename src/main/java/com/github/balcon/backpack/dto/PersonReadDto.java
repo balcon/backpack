@@ -1,4 +1,4 @@
-package com.github.balcon.backpack.dto.person;
+package com.github.balcon.backpack.dto;
 
 public record PersonReadDto(Integer id,
                             String email,
