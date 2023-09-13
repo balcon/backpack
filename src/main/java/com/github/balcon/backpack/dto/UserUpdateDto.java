@@ -1,9 +1,9 @@
 package com.github.balcon.backpack.dto;
 
 import com.github.balcon.backpack.model.Role;
+import lombok.Builder;
 
-public record PersonReadDto(Integer id,
-                            String email,
-                            String name,
+@Builder
+public record UserUpdateDto(String name,
                             Role role) {
 }

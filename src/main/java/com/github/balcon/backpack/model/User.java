@@ -14,7 +14,8 @@ import java.util.List;
 @SuperBuilder
 @Getter
 @ToString(callSuper = true)
-public class Person extends BaseEntity<Integer> {
+@Table(name = "users")
+public class User extends BaseEntity<Integer> {
     private String email;
 
     @Setter

@@ -1,12 +1,12 @@
 package com.github.balcon.backpack.web.rest.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.balcon.backpack.dto.PersonCreateDto;
-import com.github.balcon.backpack.dto.PersonReadDto;
-import com.github.balcon.backpack.dto.PersonUpdateDto;
-import com.github.balcon.backpack.dto.mapper.PersonReadMapper;
+import com.github.balcon.backpack.dto.UserCreateDto;
+import com.github.balcon.backpack.dto.UserReadDto;
+import com.github.balcon.backpack.dto.UserUpdateDto;
+import com.github.balcon.backpack.dto.mapper.UserReadMapper;
 import com.github.balcon.backpack.model.Role;
-import com.github.balcon.backpack.repository.PersonRepository;
+import com.github.balcon.backpack.repository.UserRepository;
 import com.github.balcon.backpack.web.rest.BaseMvcTest;
 import com.github.balcon.backpack.web.rest.TestData;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.github.balcon.backpack.web.rest.admin.PersonController.BASE_URL;
+import static com.github.balcon.backpack.web.rest.admin.UserController.BASE_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -32,27 +32,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @RequiredArgsConstructor
 @ComponentScan(includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE))
-class PersonControllerTest extends BaseMvcTest {
+class UserControllerTest extends BaseMvcTest {
     private final MockMvc mockMvc;
     private final ObjectMapper jsonMapper;
-    private final PersonReadMapper dtoMapper;
-    private final PersonRepository repository;
+    private final UserReadMapper dtoMapper;
+    private final UserRepository repository;
 
     @Test
     void getAll() throws Exception {
-        List<PersonReadDto> persons = Stream.of(TestData.admin, TestData.user)
+        List<UserReadDto> users = Stream.of(TestData.admin, TestData.user)
                 .map(dtoMapper::map)
                 .toList();
 
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(jsonMapper.writeValueAsString(persons)));
+                .andExpect(content().json(jsonMapper.writeValueAsString(users)));
     }
 
     @Test
     void get() throws Exception {
-        PersonReadDto user = dtoMapper.map(TestData.user);
+        UserReadDto user = dtoMapper.map(TestData.user);
 
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + TestData.USER_ID))
                 .andDo(print())
@@ -63,7 +63,7 @@ class PersonControllerTest extends BaseMvcTest {
     @Test
     void create() throws Exception {
         String newUserJson = jsonMapper.writeValueAsString(
-                PersonCreateDto.builder()
+                UserCreateDto.builder()
                         .email("new@mail.ru")
                         .name("New user").build());
 
@@ -79,7 +79,7 @@ class PersonControllerTest extends BaseMvcTest {
     @Test
     void update() throws Exception {
         String updatedUserJson = jsonMapper.writeValueAsString(
-                PersonUpdateDto.builder()
+                UserUpdateDto.builder()
                         .name("New name")
                         .role(Role.ADMIN).build());
 

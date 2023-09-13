@@ -1,4 +1,4 @@
-INSERT INTO person (id, email, name, role)
+INSERT INTO users (id, email, name, role)
 VALUES (100, 'admin@mail.ru', 'Admin', 'ADMIN'),
        (101, 'user@mail.ru', 'User', 'USER');
 

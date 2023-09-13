@@ -2,7 +2,7 @@ package com.github.balcon.backpack.web.rest;
 
 import com.github.balcon.backpack.model.Backpack;
 import com.github.balcon.backpack.model.Equipment;
-import com.github.balcon.backpack.model.Person;
+import com.github.balcon.backpack.model.User;
 import com.github.balcon.backpack.model.Role;
 import lombok.experimental.UtilityClass;
 
@@ -23,13 +23,13 @@ public class TestData {
     public static final int ADMIN_ID = 100;
     public static final int USER_ID = 101;
 
-    public Person admin = Person.builder()
+    public User admin = User.builder()
             .id(ADMIN_ID)
             .email("admin@mail.ru")
             .name("Admin")
             .role(Role.ADMIN).build();
 
-    public Person user = Person.builder()
+    public User user = User.builder()
             .id(USER_ID)
             .email("user@mail.ru")
             .name("User")
