@@ -1,9 +1,11 @@
 package com.github.balcon.backpack.service;
 
-import com.github.balcon.backpack.dto.mapper.person.PersonCreateDtoMapper;
-import com.github.balcon.backpack.dto.mapper.person.PersonReadDtoMapper;
-import com.github.balcon.backpack.dto.person.PersonCreateDto;
-import com.github.balcon.backpack.dto.person.PersonReadDto;
+import com.github.balcon.backpack.dto.PersonCreateDto;
+import com.github.balcon.backpack.dto.PersonReadDto;
+import com.github.balcon.backpack.dto.PersonUpdateDto;
+import com.github.balcon.backpack.dto.mapper.PersonCreateMapper;
+import com.github.balcon.backpack.dto.mapper.PersonReadMapper;
+import com.github.balcon.backpack.dto.mapper.PersonUpdateMapper;
 import com.github.balcon.backpack.model.Person;
 import com.github.balcon.backpack.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,22 +20,39 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class PersonService {
     private final PersonRepository repository;
-    private final PersonReadDtoMapper readDtoMapper;
-    private final PersonCreateDtoMapper createDtoMapper;
+    private final PersonReadMapper readMapper;
+    private final PersonCreateMapper createMapper;
+    private final PersonUpdateMapper updateMapper;
 
     public List<PersonReadDto> getAll() {
         return repository.findAll().stream()
-                .map(readDtoMapper::map)
+                .map(readMapper::map)
                 .toList();
     }
 
-    public Optional<PersonReadDto> getById(int id) {
+    public Optional<PersonReadDto> get(int id) {
         return repository.findById(id)
-                .map(readDtoMapper::map);
+                .map(readMapper::map);
     }
 
+    @Transactional
     public PersonReadDto create(PersonCreateDto person) {
-        Person newPerson = createDtoMapper.map(person);
-        return readDtoMapper.map(repository.save(newPerson));
+        Person newPerson = createMapper.map(person);
+        return readMapper.map(repository.saveAndFlush(newPerson));
+    }
+
+    @Transactional
+    public PersonReadDto update(int id, PersonUpdateDto personDto) {
+        return repository.findById(id)
+                .map(user -> updateMapper.map(personDto, user))
+                .map(repository::saveAndFlush)
+                .map(readMapper::map)
+                .orElseThrow();
+        // TODO: 13.09.2023 Handle exception
+    }
+
+    @Transactional
+    public void delete(int id) {
+        repository.deleteById(id);
     }
 }

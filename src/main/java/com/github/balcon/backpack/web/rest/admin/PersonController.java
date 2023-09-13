@@ -1,7 +1,8 @@
 package com.github.balcon.backpack.web.rest.admin;
 
-import com.github.balcon.backpack.dto.person.PersonCreateDto;
-import com.github.balcon.backpack.dto.person.PersonReadDto;
+import com.github.balcon.backpack.dto.PersonCreateDto;
+import com.github.balcon.backpack.dto.PersonReadDto;
+import com.github.balcon.backpack.dto.PersonUpdateDto;
 import com.github.balcon.backpack.service.PersonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,14 +26,25 @@ public class PersonController {
     }
 
     @GetMapping("/{id}")
-    public PersonReadDto getById(@PathVariable int id) {
+    public PersonReadDto get(@PathVariable int id) {
         // TODO: 11.09.2023 Throw exception
-        return service.getById(id).orElseThrow();
+        return service.get(id).orElseThrow();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PersonReadDto create(@RequestBody PersonCreateDto person) {
         return service.create(person);
+    }
+
+    @PutMapping("/{id}")
+    public PersonReadDto update(@PathVariable int id, @RequestBody PersonUpdateDto person) {
+        return service.update(id, person);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable int id) {
+        service.delete(id);
     }
 }
