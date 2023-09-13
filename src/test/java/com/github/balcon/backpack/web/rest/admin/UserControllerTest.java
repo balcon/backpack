@@ -6,6 +6,7 @@ import com.github.balcon.backpack.dto.UserReadDto;
 import com.github.balcon.backpack.dto.UserUpdateDto;
 import com.github.balcon.backpack.dto.mapper.UserReadMapper;
 import com.github.balcon.backpack.model.Role;
+import com.github.balcon.backpack.model.User;
 import com.github.balcon.backpack.repository.UserRepository;
 import com.github.balcon.backpack.web.rest.BaseMvcTest;
 import com.github.balcon.backpack.web.rest.TestData;
@@ -62,9 +63,10 @@ class UserControllerTest extends BaseMvcTest {
 
     @Test
     void create() throws Exception {
+        String mail = "new@mail.ru";
         String newUserJson = jsonMapper.writeValueAsString(
                 UserCreateDto.builder()
-                        .email("new@mail.ru")
+                        .email(mail)
                         .name("New user").build());
 
         mockMvc.perform(post(BASE_URL)
@@ -74,14 +76,18 @@ class UserControllerTest extends BaseMvcTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.role").value("USER"));
+
+        assertThat(repository.findByEmail(mail)).isPresent();
     }
 
     @Test
     void update() throws Exception {
+        String name = "New name";
+        Role role = Role.ADMIN;
         String updatedUserJson = jsonMapper.writeValueAsString(
                 UserUpdateDto.builder()
-                        .name("New name")
-                        .role(Role.ADMIN).build());
+                        .name(name)
+                        .role(role).build());
 
         mockMvc.perform(put(BASE_URL + "/" + TestData.USER_ID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -89,7 +95,12 @@ class UserControllerTest extends BaseMvcTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(TestData.USER_ID))
-                .andExpect(jsonPath("$.role").value(Role.ADMIN.name()));
+                .andExpect(jsonPath("$.role").value(role.name()));
+
+        User updatedUser = repository.findById(TestData.USER_ID).orElseThrow();
+
+        assertThat(updatedUser.getRole()).isEqualTo(role);
+        assertThat(updatedUser.getName()).isEqualTo(name);
     }
 
     @Test
