@@ -1,7 +1,9 @@
 spring:
   profiles.default: dev
 
-  jpa.hibernate.ddl-auto: create-drop
+  jpa:
+    hibernate.ddl-auto: create-drop
+    open-in-view: false
   datasource:
     driver-class-name: org.postgresql.Driver
 
