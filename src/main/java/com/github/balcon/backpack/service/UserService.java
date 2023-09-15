@@ -3,9 +3,7 @@ package com.github.balcon.backpack.service;
 import com.github.balcon.backpack.dto.UserCreateDto;
 import com.github.balcon.backpack.dto.UserReadDto;
 import com.github.balcon.backpack.dto.UserUpdateDto;
-import com.github.balcon.backpack.dto.mapper.UserCreateMapper;
-import com.github.balcon.backpack.dto.mapper.UserReadMapper;
-import com.github.balcon.backpack.dto.mapper.UserUpdateMapper;
+import com.github.balcon.backpack.dto.mapper.UserDtoMapper;
 import com.github.balcon.backpack.model.User;
 import com.github.balcon.backpack.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,33 +18,31 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class UserService {
     private final UserRepository repository;
-    private final UserReadMapper readMapper;
-    private final UserCreateMapper createMapper;
-    private final UserUpdateMapper updateMapper;
+    private final UserDtoMapper dtoMapper;
 
     public List<UserReadDto> getAll() {
         return repository.findAll().stream()
-                .map(readMapper::map)
+                .map(dtoMapper::toReadDto)
                 .toList();
     }
 
     public Optional<UserReadDto> get(int id) {
         return repository.findById(id)
-                .map(readMapper::map);
+                .map(dtoMapper::toReadDto);
     }
 
     @Transactional
     public UserReadDto create(UserCreateDto userCreateDto) {
-        User newUser = createMapper.map(userCreateDto);
-        return readMapper.map(repository.saveAndFlush(newUser));
+        User newUser = dtoMapper.toUser(userCreateDto);
+        return dtoMapper.toReadDto(repository.saveAndFlush(newUser));
     }
 
     @Transactional
     public UserReadDto update(int id, UserUpdateDto userUpdateDto) {
         return repository.findById(id)
-                .map(user -> updateMapper.map(userUpdateDto, user))
+                .map(user -> dtoMapper.toUser(userUpdateDto, user))
                 .map(repository::saveAndFlush)
-                .map(readMapper::map)
+                .map(dtoMapper::toReadDto)
                 .orElseThrow();
         // TODO: 13.09.2023 Handle exception
     }

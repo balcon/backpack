@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.balcon.backpack.dto.UserCreateDto;
 import com.github.balcon.backpack.dto.UserReadDto;
 import com.github.balcon.backpack.dto.UserUpdateDto;
-import com.github.balcon.backpack.dto.mapper.UserReadMapper;
+import com.github.balcon.backpack.dto.mapper.UserDtoMapper;
 import com.github.balcon.backpack.model.Role;
 import com.github.balcon.backpack.model.User;
 import com.github.balcon.backpack.repository.UserRepository;
@@ -36,13 +36,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest extends BaseMvcTest {
     private final MockMvc mockMvc;
     private final ObjectMapper jsonMapper;
-    private final UserReadMapper dtoMapper;
+    private final UserDtoMapper dtoMapper;
     private final UserRepository repository;
 
     @Test
     void getAll() throws Exception {
         List<UserReadDto> users = Stream.of(TestData.admin, TestData.user)
-                .map(dtoMapper::map)
+                .map(dtoMapper::toReadDto)
                 .toList();
 
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL))
@@ -53,7 +53,7 @@ class UserControllerTest extends BaseMvcTest {
 
     @Test
     void get() throws Exception {
-        UserReadDto user = dtoMapper.map(TestData.user);
+        UserReadDto user = dtoMapper.toReadDto(TestData.user);
 
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + TestData.USER_ID))
                 .andDo(print())
