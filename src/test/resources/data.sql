@@ -6,8 +6,8 @@ INSERT INTO equipment (id, name, manufacturer, weight, owner_id)
 VALUES (1, 'Huba Tour 2', 'MSR', 2500, 101),
        (2, 'Explorer -20', 'Red Fox', 1500, 101),
        (3, 'Prolite Regular', 'Therm-a-Rest', 500, 101),
-       (4, 'Explorer V2', 'Red Fox', 2500, 101),
-       (5, 'Green Kazoo', 'North Face', 1500, 101);
+       (4, 'Explorer V2', 'Red Fox', 2500, 100),
+       (5, 'Green Kazoo', 'North Face', 1500, 100);
 
 INSERT INTO backpack (id, name, owner_id)
 VALUES (50, 'Backpack 1', 101),

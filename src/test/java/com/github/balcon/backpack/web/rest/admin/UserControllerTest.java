@@ -13,8 +13,6 @@ import com.github.balcon.backpack.web.rest.TestData;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -24,15 +22,13 @@ import java.util.stream.Stream;
 
 import static com.github.balcon.backpack.web.rest.admin.UserController.BASE_URL;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @AutoConfigureMockMvc
 @RequiredArgsConstructor
-@ComponentScan(includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE))
 class UserControllerTest extends BaseMvcTest {
     private final MockMvc mockMvc;
     private final ObjectMapper jsonMapper;
@@ -45,17 +41,17 @@ class UserControllerTest extends BaseMvcTest {
                 .map(dtoMapper::toReadDto)
                 .toList();
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL))
+        mockMvc.perform(get(BASE_URL))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonMapper.writeValueAsString(users)));
     }
 
     @Test
-    void get() throws Exception {
+    void getById() throws Exception {
         UserReadDto user = dtoMapper.toReadDto(TestData.user);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + TestData.USER_ID))
+        mockMvc.perform(get(BASE_URL + "/" + TestData.USER_ID))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonMapper.writeValueAsString(user)));

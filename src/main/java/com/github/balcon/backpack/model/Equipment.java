@@ -46,5 +46,5 @@ public class Equipment extends BaseEntity<Integer> {
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
-    private Person owner;
+    private User owner;
 }

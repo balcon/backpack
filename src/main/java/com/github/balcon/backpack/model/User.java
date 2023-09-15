@@ -34,7 +34,7 @@ public class User extends BaseEntity<Integer> {
 
     @Builder.Default
     @ToString.Exclude
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "owner")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Backpack> backpacks = new ArrayList<>();
 }
