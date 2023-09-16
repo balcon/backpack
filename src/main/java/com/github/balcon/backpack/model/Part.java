@@ -1,14 +1,13 @@
 package com.github.balcon.backpack.model;
 
-import jakarta.persistence.Entity;
 import lombok.*;
 
-@Entity
+//@Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
 @ToString
-public class Part extends BaseEntity<Integer> {
+public class Part extends BaseEntity {
     private String name;
     private int weight;
 }

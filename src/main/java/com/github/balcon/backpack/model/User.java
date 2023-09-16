@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @ToString(callSuper = true)
 @Table(name = "users")
-public class User extends BaseEntity<Integer> {
+public class User extends BaseEntity {
     private String email;
 
     @Setter

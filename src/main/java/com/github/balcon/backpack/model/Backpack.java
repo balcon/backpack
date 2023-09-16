@@ -14,7 +14,7 @@ import java.util.List;
 @SuperBuilder
 @Getter
 @ToString(callSuper = true)
-public class Backpack extends BaseEntity<Integer> {
+public class Backpack extends BaseEntity {
     private String name;
 
     @Builder.Default

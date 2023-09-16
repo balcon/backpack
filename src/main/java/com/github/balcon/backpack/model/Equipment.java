@@ -17,7 +17,7 @@ import java.util.List;
 @SuperBuilder
 @Getter
 @ToString(callSuper = true)
-public class Equipment extends BaseEntity<Integer> {
+public class Equipment extends BaseEntity {
     private String name;
     private String manufacturer;
     private int weight;
