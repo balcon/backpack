@@ -1,13 +1,13 @@
 package com.github.balcon.backpack.web.rest.user;
 
 import com.github.balcon.backpack.config.SecurityConfig;
+import com.github.balcon.backpack.dto.EquipmentCreateDto;
 import com.github.balcon.backpack.dto.EquipmentReadDto;
+import com.github.balcon.backpack.dto.EquipmentUpdateDto;
 import com.github.balcon.backpack.service.EquipmentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,8 +21,7 @@ public class EquipmentController {
 
     @GetMapping
     public List<EquipmentReadDto> getAllOfAuthUser() {
-        int authUserId = SecurityConfig.AuthUserId;
-        return service.getAllByUser(authUserId);
+        return service.getAllByUser(SecurityConfig.AuthUserId);
     }
 
     @GetMapping("/{id}")
@@ -30,5 +29,23 @@ public class EquipmentController {
         // TODO: 16.09.2023 exception if not exist
         // TODO: 16.09.2023 exception if not owner
         return service.get(id).orElseThrow();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public EquipmentReadDto create(@RequestBody EquipmentCreateDto equipmentCreateDto) {
+        return service.create(equipmentCreateDto, SecurityConfig.AuthUserId);
+    }
+
+    @PutMapping("/{id}")
+    public EquipmentReadDto update(@PathVariable int id,
+                                   @RequestBody EquipmentUpdateDto equipmentUpdateDto) {
+        return service.update(id, equipmentUpdateDto, SecurityConfig.AuthUserId);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable int id) {
+        service.delete(id, SecurityConfig.AuthUserId);
     }
 }

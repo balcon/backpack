@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder
 @Getter
+@Setter
 @ToString(callSuper = true)
 public class Equipment extends BaseEntity {
     private String name;
