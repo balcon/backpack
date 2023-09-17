@@ -29,6 +29,7 @@ public class EquipmentService {
                 .toList();
     }
 
+    // TODO: 17.09.2023 check if not owner
     public Optional<EquipmentReadDto> get(int id) {
         return equipmentRepository.findById(id)
                 .map(dtoMapper::toReadDto);

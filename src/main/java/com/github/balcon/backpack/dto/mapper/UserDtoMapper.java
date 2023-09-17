@@ -10,9 +10,9 @@ import org.mapstruct.Mapper;
 public interface UserDtoMapper {
     UserReadDto toReadDto(User user);
 
-    User toUser(UserCreateDto userCreateDto);
+    User toEntity(UserCreateDto userCreateDto);
 
-    default User toUser(UserUpdateDto userUpdateDto, User user) {
+    default User toEntity(UserUpdateDto userUpdateDto, User user) {
         user.setName(userUpdateDto.name());
         user.setRole(userUpdateDto.role());
         return user;

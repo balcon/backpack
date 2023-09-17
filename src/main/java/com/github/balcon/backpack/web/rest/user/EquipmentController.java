@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.github.balcon.backpack.config.ApplicationConfig.API_URL;
+
 @RestController
 @RequestMapping(EquipmentController.BASE_URL)
 @RequiredArgsConstructor
 public class EquipmentController {
-    public static final String BASE_URL = "/user/equipments";
+    public static final String BASE_URL = API_URL + "/user/equipments";
 
     private final EquipmentService service;
 

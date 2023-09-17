@@ -33,14 +33,14 @@ public class UserService {
 
     @Transactional
     public UserReadDto create(UserCreateDto userCreateDto) {
-        User newUser = dtoMapper.toUser(userCreateDto);
+        User newUser = dtoMapper.toEntity(userCreateDto);
         return dtoMapper.toReadDto(repository.saveAndFlush(newUser));
     }
 
     @Transactional
     public UserReadDto update(int id, UserUpdateDto userUpdateDto) {
         return repository.findById(id)
-                .map(user -> dtoMapper.toUser(userUpdateDto, user))
+                .map(user -> dtoMapper.toEntity(userUpdateDto, user))
                 .map(repository::saveAndFlush)
                 .map(dtoMapper::toReadDto)
                 .orElseThrow();
