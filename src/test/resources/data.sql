@@ -14,7 +14,7 @@ VALUES (50, 'Backpack 1', 101),
        (51, 'Backpack 2', 101),
        (52, 'Backpack 3', 100);
 
-INSERT INTO backpack_equipment (backpacks_id, equipment_id)
+INSERT INTO backpack_equipment (backpack_id, equipment_id)
 VALUES (50, 2),
        (50, 3),
        (51, 1),

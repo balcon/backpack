@@ -1,48 +1,29 @@
 package com.github.balcon.backpack.service;
 
-import com.github.balcon.backpack.dto.BackpackDto;
-import com.github.balcon.backpack.model.Backpack;
-import com.github.balcon.backpack.model.Equipment;
-import com.github.balcon.backpack.model.Part;
+import com.github.balcon.backpack.dto.BackpackReadDto;
+import com.github.balcon.backpack.dto.mapper.BackpackDtoMapper;
 import com.github.balcon.backpack.repository.BackpackRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class BackpackService {
     private final BackpackRepository repository;
+    private final BackpackDtoMapper dtoMapper;
 
-    public BackpackDto getById(int id) {
-        // TODO: 03.09.2023 Check if not exists
-        Backpack backpack = repository.findById(id).orElseThrow();
-        int weight;
-
-        // If equipment doesn't contain any parts, then weight of equipment summed
-        weight = backpack.getEquipment().stream()
-                .filter(e -> e.getParts().isEmpty())
-                .mapToInt(Equipment::getWeight)
-                .sum();
-
-        // If equipment contains some parts, then summary weight of parts summed
-        weight += backpack.getEquipment().stream()
-                .filter(e -> !e.getParts().isEmpty())
-                .flatMapToInt(e -> e.getParts().stream()
-                        .mapToInt(Part::getWeight))
-                .sum();
-
-        return new BackpackDto(backpack.getName(), backpack.getEquipment(), weight);
+    // TODO: 17.09.2023 check if not owner
+    public Optional<BackpackReadDto> get(int id, int userId) {
+        return repository.findById(id)
+                .map(dtoMapper::toReadDto);
     }
 
-    public void save(Backpack backpack) {
-        // TODO: 05.09.2023 Check is not new
-        repository.save(backpack);
-    }
-
-    // TODO: 05.09.2023 return DTO
-    public List<Backpack> getAll() {
-        return repository.findAll();
+    public List<BackpackReadDto> getAllByUser(int userId) {
+        return repository.findAllByOwnerId(userId).stream()
+                .map(dtoMapper::toReadDto)
+                .toList();
     }
 }

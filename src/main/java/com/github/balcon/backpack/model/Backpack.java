@@ -20,6 +20,9 @@ public class Backpack extends BaseEntity {
     @Builder.Default
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "backpack_equipment",
+            joinColumns = @JoinColumn(name = "backpack_id"),
+            inverseJoinColumns = @JoinColumn(name = "equipment_id"))
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Equipment> equipment = new ArrayList<>();
 
