@@ -15,6 +15,7 @@ import java.util.List;
 @Getter
 @ToString(callSuper = true)
 public class Backpack extends BaseEntity {
+    @Setter
     private String name;
 
     @Builder.Default
@@ -26,6 +27,7 @@ public class Backpack extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Equipment> equipment = new ArrayList<>();
 
+    @Setter
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
