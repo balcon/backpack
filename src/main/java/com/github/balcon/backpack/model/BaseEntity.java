@@ -11,7 +11,7 @@ import org.springframework.data.domain.Persistable;
 
 @MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Getter
 @ToString
 public abstract class BaseEntity implements Persistable<Integer> {

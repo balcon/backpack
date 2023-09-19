@@ -1,5 +1,6 @@
 package com.github.balcon.backpack.web.rest.user;
 
+import com.github.balcon.backpack.dto.BackpackFullReadDto;
 import com.github.balcon.backpack.dto.BackpackReadDto;
 import com.github.balcon.backpack.dto.BackpackWriteDto;
 import com.github.balcon.backpack.dto.mapper.BackpackMapper;
@@ -16,7 +17,9 @@ import java.util.stream.Stream;
 
 import static com.github.balcon.backpack.web.rest.TestData.*;
 import static com.github.balcon.backpack.web.rest.user.BackpackController.BASE_URL;
+import static com.github.balcon.backpack.web.rest.user.BackpackController.COLLECTION;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -25,14 +28,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RequiredArgsConstructor
 @ExtendWith(MockAuthIdExtension.class)
 class BackpackControllerTest extends BaseMvcTest {
-    private final BackpackMapper mapper;
+    private final BackpackMapper backpackMapper;
     private final BackpackRepository repository;
 
     @Test
     @MockAuthId(id = USER_ID)
     void getAllOfAuthUser() throws Exception {
         List<BackpackReadDto> backpacksReadDto = Stream.of(userBackpack1, userBackpack2)
-                .map(mapper::toReadDto)
+                .map(backpackMapper::toReadDto)
                 .toList();
 
         mockMvc.perform(get(BASE_URL))
@@ -44,12 +47,14 @@ class BackpackControllerTest extends BaseMvcTest {
     @Test
     @MockAuthId(id = USER_ID)
     void getById() throws Exception {
-        BackpackReadDto backpackReadDto = mapper.toReadDto(userBackpack1);
+        BackpackFullReadDto backpackFullReadDto = backpackMapper.toFullReadDto(userBackpack1);
 
         mockMvc.perform(get(BASE_URL + "/" + USER_BACKPACK_1_ID))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(toJson(backpackReadDto)));
+                .andExpect(content().json(toJson(backpackFullReadDto)))
+                .andExpect(jsonPath("$.weight").value(userSleepingBag.getWeight() + userSleepingPad.getWeight()))
+                .andExpect(jsonPath("$.equipment", hasSize(userBackpack1.getEquipment().size())));
     }
 
     @Test
@@ -97,5 +102,36 @@ class BackpackControllerTest extends BaseMvcTest {
         repository.flush();
 
         assertThat(repository.findById(USER_BACKPACK_1_ID)).isNotPresent();
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void addEquipmentToBackpack() throws Exception {
+        BackpackFullReadDto backpackFullReadDto = backpackMapper.toFullReadDto(userBackpack1.toBuilder()
+                .equipment(List.of(userSleepingBag, userSleepingPad, userTent)).build());
+        int equipmentCount = repository.findById(USER_BACKPACK_1_ID).orElseThrow().getEquipment().size();
+
+        mockMvc.perform(post(BASE_URL + "/" + USER_BACKPACK_1_ID + COLLECTION + "/" + USER_TENT_ID))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().json(toJson(backpackFullReadDto)));
+
+        assertThat(repository.findById(USER_BACKPACK_1_ID).orElseThrow().getEquipment()).hasSize(equipmentCount + 1);
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void removeEquipmentFromBackpack() throws Exception {
+        BackpackFullReadDto backpackFullReadDto = backpackMapper.toFullReadDto(userBackpack1.toBuilder()
+                .equipment(List.of(userSleepingBag)).build());
+        int equipmentCount = repository.findById(USER_BACKPACK_1_ID).orElseThrow().getEquipment().size();
+
+        mockMvc.perform(delete(BASE_URL + "/" + USER_BACKPACK_1_ID + COLLECTION + "/" + USER_SLEEPING_PAD_ID))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(toJson(backpackFullReadDto)));
+
+        assertThat(repository.findById(USER_BACKPACK_1_ID).orElseThrow().getEquipment())
+                .hasSize(equipmentCount - 1);
     }
 }

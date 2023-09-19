@@ -1,6 +1,5 @@
 package com.github.balcon.backpack.web.rest.user;
 
-import com.github.balcon.backpack.config.SecurityConfig;
 import com.github.balcon.backpack.dto.EquipmentReadDto;
 import com.github.balcon.backpack.dto.EquipmentWriteDto;
 import com.github.balcon.backpack.service.EquipmentService;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.github.balcon.backpack.config.ApplicationConfig.API_URL;
+import static com.github.balcon.backpack.config.SecurityConfig.authUserId;
 
 @RestController
 @RequestMapping(EquipmentController.BASE_URL)
@@ -22,7 +22,7 @@ public class EquipmentController {
 
     @GetMapping
     public List<EquipmentReadDto> getAllOfAuthUser() {
-        return service.getAllByUser(SecurityConfig.AuthUserId);
+        return service.getAllByUser(authUserId);
     }
 
     @GetMapping("/{id}")
@@ -35,18 +35,18 @@ public class EquipmentController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EquipmentReadDto create(@RequestBody EquipmentWriteDto equipmentWriteDto) {
-        return service.create(equipmentWriteDto, SecurityConfig.AuthUserId);
+        return service.create(equipmentWriteDto, authUserId);
     }
 
     @PutMapping("/{id}")
     public EquipmentReadDto update(@PathVariable int id,
                                    @RequestBody EquipmentWriteDto equipmentWriteDto) {
-        return service.update(id, equipmentWriteDto, SecurityConfig.AuthUserId);
+        return service.update(id, equipmentWriteDto, authUserId);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
-        service.delete(id, SecurityConfig.AuthUserId);
+        service.delete(id, authUserId);
     }
 }

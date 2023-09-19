@@ -15,7 +15,7 @@ public class MockAuthIdExtension implements InvocationInterceptor {
         Method method = invocationContext.getExecutable();
         if (method.isAnnotationPresent(MockAuthId.class)) {
             MockAuthId annotation = method.getAnnotation(MockAuthId.class);
-            SecurityConfig.AuthUserId = annotation.id();
+            SecurityConfig.authUserId = annotation.id();
         }
         InvocationInterceptor.super.interceptTestMethod(invocation, invocationContext, extensionContext);
     }

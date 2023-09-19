@@ -1,6 +1,6 @@
 package com.github.balcon.backpack.web.rest.user;
 
-import com.github.balcon.backpack.config.SecurityConfig;
+import com.github.balcon.backpack.dto.BackpackFullReadDto;
 import com.github.balcon.backpack.dto.BackpackReadDto;
 import com.github.balcon.backpack.dto.BackpackWriteDto;
 import com.github.balcon.backpack.service.BackpackService;
@@ -11,30 +11,32 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.github.balcon.backpack.config.ApplicationConfig.API_URL;
+import static com.github.balcon.backpack.config.SecurityConfig.authUserId;
 
 @RestController
 @RequestMapping(BackpackController.BASE_URL)
 @RequiredArgsConstructor
 public class BackpackController {
     protected static final String BASE_URL = API_URL + "/user/backpacks";
+    protected static final String COLLECTION = "/equipment";
 
     private final BackpackService service;
 
     @GetMapping
     public List<BackpackReadDto> getAllOfAuthUser() {
-        return service.getAllByUser(SecurityConfig.AuthUserId);
+        return service.getAllByUser(authUserId);
     }
 
     @GetMapping("/{id}")
-    public BackpackReadDto get(@PathVariable int id) {
-        return service.get(id, SecurityConfig.AuthUserId).orElseThrow();
+    public BackpackFullReadDto get(@PathVariable int id) {
+        return service.get(id, authUserId).orElseThrow();
         // TODO: 17.09.2023 throw exception
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BackpackReadDto create(@RequestBody BackpackWriteDto backpackWriteDto) {
-        return service.create(backpackWriteDto, SecurityConfig.AuthUserId);
+        return service.create(backpackWriteDto, authUserId);
     }
 
     @PutMapping("/{id}")
@@ -46,6 +48,21 @@ public class BackpackController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
-        service.delete(id, SecurityConfig.AuthUserId);
+        service.delete(id, authUserId);
+    }
+
+    @PostMapping("/{backpackId}" + COLLECTION + "/{equipmentId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public BackpackFullReadDto addEquipmentToBackpack(@PathVariable int backpackId,
+                                                      @PathVariable int equipmentId) {
+        return service.addEquipment(backpackId, equipmentId, authUserId).orElseThrow();
+        // TODO: 19.09.2023 throw exception
+    }
+
+    @DeleteMapping("/{backpackId}" + COLLECTION + "/{equipmentId}")
+    public BackpackFullReadDto removeEquipmentFromBackpack(@PathVariable int backpackId,
+                                                           @PathVariable int equipmentId) {
+        return service.removeEquipment(backpackId, equipmentId, authUserId).orElseThrow();
+        // TODO: 19.09.2023 Throw exception
     }
 }

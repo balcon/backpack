@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static com.github.balcon.backpack.web.rest.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-// TODO: 19.09.2023 Try to test without context startup 
+// TODO: 19.09.2023 Try to test without context startup
 @SpringBootTest
 class BackpackMapperTest {
     @Autowired

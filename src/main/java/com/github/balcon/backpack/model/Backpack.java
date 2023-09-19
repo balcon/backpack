@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Getter
 @ToString(callSuper = true)
 public class Backpack extends BaseEntity {
@@ -31,4 +31,14 @@ public class Backpack extends BaseEntity {
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
+
+    public Backpack addEquipment(Equipment equipment) {
+        this.equipment.add(equipment);
+        return this;
+    }
+
+    public Backpack removeEquipment(Equipment equipment) {
+        this.equipment.remove(equipment);
+        return this;
+    }
 }

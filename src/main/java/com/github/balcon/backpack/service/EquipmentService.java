@@ -20,18 +20,18 @@ import java.util.Optional;
 public class EquipmentService {
     private final EquipmentRepository equipmentRepository;
     private final UserRepository userRepository;
-    private final EquipmentMapper dtoMapper;
+    private final EquipmentMapper mapper;
 
     public List<EquipmentReadDto> getAllByUser(int authUserId) {
         return equipmentRepository.findAllByOwnerId(authUserId).stream()
-                .map(dtoMapper::toReadDto)
+                .map(mapper::toReadDto)
                 .toList();
     }
 
     // TODO: 17.09.2023 check if not owner
     public Optional<EquipmentReadDto> get(int id) {
         return equipmentRepository.findById(id)
-                .map(dtoMapper::toReadDto);
+                .map(mapper::toReadDto);
     }
 
     @Transactional
@@ -39,18 +39,18 @@ public class EquipmentService {
         // TODO: 16.09.2023 throw exception if not exists
         User user = userRepository.findById(authUserId).orElseThrow();
         // TODO: 16.09.2023 change mapper
-        Equipment equipment = dtoMapper.toEntity(equipmentWriteDto);
+        Equipment equipment = mapper.toEntity(equipmentWriteDto);
         equipment.setOwner(user);
-        return dtoMapper.toReadDto(equipmentRepository.saveAndFlush(equipment));
+        return mapper.toReadDto(equipmentRepository.saveAndFlush(equipment));
     }
 
     @Transactional
     public EquipmentReadDto update(int id, EquipmentWriteDto equipmentWriteDto, int authUserId) {
         // TODO: 16.09.2023 check if not owner
         return equipmentRepository.findById(id)
-                .map(equipment -> dtoMapper.toEntity(equipmentWriteDto, equipment))
+                .map(equipment -> mapper.toEntity(equipmentWriteDto, equipment))
                 .map(equipmentRepository::saveAndFlush)
-                .map(dtoMapper::toReadDto)
+                .map(mapper::toReadDto)
                 .orElseThrow();
         // TODO: 16.09.2023 Exception???
     }
