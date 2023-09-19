@@ -7,7 +7,7 @@ import com.github.balcon.backpack.model.User;
 import org.mapstruct.Mapper;
 
 @Mapper
-public interface UserDtoMapper {
+public interface UserMapper {
     UserReadDto toReadDto(User user);
 
     User toEntity(UserCreateDto userCreateDto);

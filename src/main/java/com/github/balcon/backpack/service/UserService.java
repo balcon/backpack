@@ -3,7 +3,7 @@ package com.github.balcon.backpack.service;
 import com.github.balcon.backpack.dto.UserCreateDto;
 import com.github.balcon.backpack.dto.UserReadDto;
 import com.github.balcon.backpack.dto.UserUpdateDto;
-import com.github.balcon.backpack.dto.mapper.UserDtoMapper;
+import com.github.balcon.backpack.dto.mapper.UserMapper;
 import com.github.balcon.backpack.model.User;
 import com.github.balcon.backpack.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class UserService {
     private final UserRepository repository;
-    private final UserDtoMapper dtoMapper;
+    private final UserMapper dtoMapper;
 
     public List<UserReadDto> getAll() {
         return repository.findAll().stream()

@@ -1,9 +1,8 @@
 package com.github.balcon.backpack.web.rest.user;
 
 import com.github.balcon.backpack.config.SecurityConfig;
-import com.github.balcon.backpack.dto.EquipmentCreateDto;
 import com.github.balcon.backpack.dto.EquipmentReadDto;
-import com.github.balcon.backpack.dto.EquipmentUpdateDto;
+import com.github.balcon.backpack.dto.EquipmentWriteDto;
 import com.github.balcon.backpack.service.EquipmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,14 +34,14 @@ public class EquipmentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EquipmentReadDto create(@RequestBody EquipmentCreateDto equipmentCreateDto) {
-        return service.create(equipmentCreateDto, SecurityConfig.AuthUserId);
+    public EquipmentReadDto create(@RequestBody EquipmentWriteDto equipmentWriteDto) {
+        return service.create(equipmentWriteDto, SecurityConfig.AuthUserId);
     }
 
     @PutMapping("/{id}")
     public EquipmentReadDto update(@PathVariable int id,
-                                   @RequestBody EquipmentUpdateDto equipmentUpdateDto) {
-        return service.update(id, equipmentUpdateDto, SecurityConfig.AuthUserId);
+                                   @RequestBody EquipmentWriteDto equipmentWriteDto) {
+        return service.update(id, equipmentWriteDto, SecurityConfig.AuthUserId);
     }
 
     @DeleteMapping("/{id}")

@@ -1,8 +1,8 @@
 package com.github.balcon.backpack.service;
 
-import com.github.balcon.backpack.dto.BackpackCreateDto;
 import com.github.balcon.backpack.dto.BackpackReadDto;
-import com.github.balcon.backpack.dto.mapper.BackpackDtoMapper;
+import com.github.balcon.backpack.dto.BackpackWriteDto;
+import com.github.balcon.backpack.dto.mapper.BackpackMapper;
 import com.github.balcon.backpack.model.Backpack;
 import com.github.balcon.backpack.model.User;
 import com.github.balcon.backpack.repository.BackpackRepository;
@@ -20,7 +20,7 @@ import java.util.Optional;
 public class BackpackService {
     private final BackpackRepository backpackRepository;
     private final UserRepository userRepository;
-    private final BackpackDtoMapper dtoMapper;
+    private final BackpackMapper dtoMapper;
 
     // TODO: 17.09.2023 check if not owner
     public Optional<BackpackReadDto> get(int id, int userId) {
@@ -35,20 +35,20 @@ public class BackpackService {
     }
 
     @Transactional
-    public BackpackReadDto create(BackpackCreateDto backpackCreateDto, int authUserId) {
+    public BackpackReadDto create(BackpackWriteDto backpackWriteDto, int authUserId) {
         // TODO: 18.09.2023 Throw exception
         User user = userRepository.findById(authUserId).orElseThrow();
         // TODO: 18.09.2023 Change mapper
-        Backpack backpack = dtoMapper.toEntity(backpackCreateDto);
+        Backpack backpack = dtoMapper.toEntity(backpackWriteDto);
         backpack.setOwner(user);
 
         return dtoMapper.toReadDto(backpackRepository.saveAndFlush(backpack));
     }
 
-    public BackpackReadDto update(int id, BackpackCreateDto backpackCreateDto) {
+    public BackpackReadDto update(int id, BackpackWriteDto backpackWriteDto) {
         // TODO: 18.09.2023 Not found exception
         return backpackRepository.findById(id)
-                .map(backpack -> dtoMapper.toEntity(backpackCreateDto, backpack))
+                .map(backpack -> dtoMapper.toEntity(backpackWriteDto, backpack))
                 .map(backpackRepository::saveAndFlush)
                 .map(dtoMapper::toReadDto)
                 .orElseThrow();

@@ -1,22 +1,17 @@
 package com.github.balcon.backpack.web.rest.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.balcon.backpack.dto.EquipmentCreateDto;
 import com.github.balcon.backpack.dto.EquipmentReadDto;
-import com.github.balcon.backpack.dto.EquipmentUpdateDto;
-import com.github.balcon.backpack.dto.mapper.EquipmentDtoMapper;
+import com.github.balcon.backpack.dto.EquipmentWriteDto;
+import com.github.balcon.backpack.dto.mapper.EquipmentMapper;
 import com.github.balcon.backpack.model.Equipment;
 import com.github.balcon.backpack.repository.EquipmentRepository;
 import com.github.balcon.backpack.web.rest.BaseMvcTest;
 import com.github.balcon.backpack.web.rest.util.MockAuthId;
 import com.github.balcon.backpack.web.rest.util.MockAuthIdExtension;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -28,43 +23,34 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
-@AutoConfigureMockMvc
 @RequiredArgsConstructor
 @ExtendWith(MockAuthIdExtension.class)
 class EquipmentControllerTest extends BaseMvcTest {
-    private final MockMvc mockMvc;
-    private final ObjectMapper jsonMapper;
-    private final EquipmentDtoMapper dtoMapper;
+    private final EquipmentMapper mapper;
     private final EquipmentRepository repository;
 
     @Test
     @MockAuthId(id = USER_ID)
     void getAllOfAuthUser() throws Exception {
-        List<EquipmentReadDto> equipment = Stream.of(userTent, userSleepingBag, userSleepingPad)
-                .map(dtoMapper::toReadDto)
+        List<EquipmentReadDto> equipmentReadDto = Stream.of(userTent, userSleepingBag, userSleepingPad)
+                .map(mapper::toReadDto)
                 .toList();
 
         mockMvc.perform(get(BASE_URL))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(jsonMapper.writeValueAsString(equipment)));
+                .andExpect(content().json(toJson(equipmentReadDto)));
     }
 
     @Test
     @MockAuthId(id = USER_ID)
     void getById() throws Exception {
-        EquipmentReadDto equipment = dtoMapper.toReadDto(userTent);
+        EquipmentReadDto equipmentReadDto = mapper.toReadDto(userTent);
 
         mockMvc.perform(get(BASE_URL + "/" + USER_TENT_ID))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(jsonMapper.writeValueAsString(equipment)));
-    }
-
-    @Test
-    @Disabled("Check return 403 Forbidden or 404 Not found")
-    void getByIdIfNotOwner() {
+                .andExpect(content().json(toJson(equipmentReadDto)));
     }
 
     @Test
@@ -73,12 +59,12 @@ class EquipmentControllerTest extends BaseMvcTest {
         String name = "Star River 2";
         String manufacturer = "Naturehike";
         int weight = 2000;
-        String equipmentJson = jsonMapper.writeValueAsString(
-                new EquipmentCreateDto(name, manufacturer, weight));
+        EquipmentWriteDto equipmentWriteDto = new EquipmentWriteDto(name, manufacturer, weight);
+        int equipmentCount = repository.findAllByOwnerId(USER_ID).size();
 
         mockMvc.perform(post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(equipmentJson))
+                        .content(toJson(equipmentWriteDto)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNotEmpty())
@@ -86,7 +72,7 @@ class EquipmentControllerTest extends BaseMvcTest {
                 .andExpect(jsonPath("$.manufacturer").value(manufacturer))
                 .andExpect(jsonPath("$.weight").value(weight));
 
-        assertThat(repository.findAllByOwnerId(USER_ID)).hasSize(4);
+        assertThat(repository.findAllByOwnerId(USER_ID)).hasSize(equipmentCount + 1);
     }
 
     @Test
@@ -94,14 +80,12 @@ class EquipmentControllerTest extends BaseMvcTest {
     void update() throws Exception {
         String name = "New name";
         String manufacturer = "New Manufacturer";
-        String updateEquipmentJson = jsonMapper.writeValueAsString(
-                EquipmentUpdateDto.builder()
-                        .name(name)
-                        .manufacturer(manufacturer).build());
+        int weight = 1000;
+        EquipmentWriteDto equipmentWriteDto = new EquipmentWriteDto(name, manufacturer, weight);
 
         mockMvc.perform(put(BASE_URL + "/" + USER_TENT_ID)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(updateEquipmentJson))
+                        .content(toJson(equipmentWriteDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(USER_TENT_ID))
@@ -112,6 +96,7 @@ class EquipmentControllerTest extends BaseMvcTest {
 
         assertThat(updatedEquipment.getName()).isEqualTo(name);
         assertThat(updatedEquipment.getManufacturer()).isEqualTo(manufacturer);
+        assertThat(updatedEquipment.getWeight()).isEqualTo(weight);
     }
 
     @Test

@@ -1,8 +1,8 @@
 package com.github.balcon.backpack.web.rest.user;
 
 import com.github.balcon.backpack.config.SecurityConfig;
-import com.github.balcon.backpack.dto.BackpackCreateDto;
 import com.github.balcon.backpack.dto.BackpackReadDto;
+import com.github.balcon.backpack.dto.BackpackWriteDto;
 import com.github.balcon.backpack.service.BackpackService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,14 +33,14 @@ public class BackpackController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BackpackReadDto create(@RequestBody BackpackCreateDto backpackCreateDto) {
-        return service.create(backpackCreateDto, SecurityConfig.AuthUserId);
+    public BackpackReadDto create(@RequestBody BackpackWriteDto backpackWriteDto) {
+        return service.create(backpackWriteDto, SecurityConfig.AuthUserId);
     }
 
     @PutMapping("/{id}")
     public BackpackReadDto update(@PathVariable int id,
-                                  @RequestBody BackpackCreateDto backpackCreateDto) {
-        return service.update(id, backpackCreateDto);
+                                  @RequestBody BackpackWriteDto backpackWriteDto) {
+        return service.update(id, backpackWriteDto);
     }
 
     @DeleteMapping("/{id}")

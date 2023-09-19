@@ -1,9 +1,8 @@
 package com.github.balcon.backpack.service;
 
-import com.github.balcon.backpack.dto.EquipmentCreateDto;
 import com.github.balcon.backpack.dto.EquipmentReadDto;
-import com.github.balcon.backpack.dto.EquipmentUpdateDto;
-import com.github.balcon.backpack.dto.mapper.EquipmentDtoMapper;
+import com.github.balcon.backpack.dto.EquipmentWriteDto;
+import com.github.balcon.backpack.dto.mapper.EquipmentMapper;
 import com.github.balcon.backpack.model.Equipment;
 import com.github.balcon.backpack.model.User;
 import com.github.balcon.backpack.repository.EquipmentRepository;
@@ -21,7 +20,7 @@ import java.util.Optional;
 public class EquipmentService {
     private final EquipmentRepository equipmentRepository;
     private final UserRepository userRepository;
-    private final EquipmentDtoMapper dtoMapper;
+    private final EquipmentMapper dtoMapper;
 
     public List<EquipmentReadDto> getAllByUser(int authUserId) {
         return equipmentRepository.findAllByOwnerId(authUserId).stream()
@@ -36,20 +35,20 @@ public class EquipmentService {
     }
 
     @Transactional
-    public EquipmentReadDto create(EquipmentCreateDto equipmentCreateDto, int authUserId) {
+    public EquipmentReadDto create(EquipmentWriteDto equipmentWriteDto, int authUserId) {
         // TODO: 16.09.2023 throw exception if not exists
         User user = userRepository.findById(authUserId).orElseThrow();
         // TODO: 16.09.2023 change mapper
-        Equipment equipment = dtoMapper.toEntity(equipmentCreateDto);
+        Equipment equipment = dtoMapper.toEntity(equipmentWriteDto);
         equipment.setOwner(user);
         return dtoMapper.toReadDto(equipmentRepository.saveAndFlush(equipment));
     }
 
     @Transactional
-    public EquipmentReadDto update(int id, EquipmentUpdateDto equipmentUpdateDto, int authUserId) {
+    public EquipmentReadDto update(int id, EquipmentWriteDto equipmentWriteDto, int authUserId) {
         // TODO: 16.09.2023 check if not owner
         return equipmentRepository.findById(id)
-                .map(equipment -> dtoMapper.toEntity(equipmentUpdateDto, equipment))
+                .map(equipment -> dtoMapper.toEntity(equipmentWriteDto, equipment))
                 .map(equipmentRepository::saveAndFlush)
                 .map(dtoMapper::toReadDto)
                 .orElseThrow();
