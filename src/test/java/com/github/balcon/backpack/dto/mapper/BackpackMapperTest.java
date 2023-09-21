@@ -1,16 +1,15 @@
 package com.github.balcon.backpack.dto.mapper;
 
 import com.github.balcon.backpack.dto.BackpackFullReadDto;
+import com.github.balcon.backpack.web.rest.BaseMvcTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static com.github.balcon.backpack.web.rest.TestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // TODO: 19.09.2023 Try to test without context startup
-@SpringBootTest
-class BackpackMapperTest {
+class BackpackMapperTest extends BaseMvcTest {
     @Autowired
     BackpackMapper mapper;
 

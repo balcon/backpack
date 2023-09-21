@@ -1,5 +1,6 @@
 package com.github.balcon.backpack.service;
 
+import com.github.balcon.backpack.dto.EquipmentFullReadDto;
 import com.github.balcon.backpack.dto.EquipmentReadDto;
 import com.github.balcon.backpack.dto.EquipmentWriteDto;
 import com.github.balcon.backpack.dto.mapper.EquipmentMapper;
@@ -29,9 +30,9 @@ public class EquipmentService {
     }
 
     // TODO: 17.09.2023 check if not owner
-    public Optional<EquipmentReadDto> get(int id) {
+    public Optional<EquipmentFullReadDto> get(int id) {
         return equipmentRepository.findById(id)
-                .map(mapper::toReadDto);
+                .map(mapper::toFullReadDto);
     }
 
     @Transactional

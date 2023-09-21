@@ -1,5 +1,6 @@
 package com.github.balcon.backpack.web.rest.user;
 
+import com.github.balcon.backpack.dto.EquipmentFullReadDto;
 import com.github.balcon.backpack.dto.EquipmentReadDto;
 import com.github.balcon.backpack.dto.EquipmentWriteDto;
 import com.github.balcon.backpack.dto.mapper.EquipmentMapper;
@@ -19,6 +20,7 @@ import java.util.stream.Stream;
 import static com.github.balcon.backpack.web.rest.TestData.*;
 import static com.github.balcon.backpack.web.rest.user.EquipmentController.BASE_URL;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -45,12 +47,15 @@ class EquipmentControllerTest extends BaseMvcTest {
     @Test
     @MockAuthId(id = USER_ID)
     void getById() throws Exception {
-        EquipmentReadDto equipmentReadDto = mapper.toReadDto(userTent);
+        EquipmentFullReadDto equipmentFullReadDto =
+                mapper.toFullReadDto(userSleepingBag.toBuilder()
+                        .backpacks(List.of(userBackpack1, userBackpack2)).build());
 
-        mockMvc.perform(get(BASE_URL + "/" + USER_TENT_ID))
+        mockMvc.perform(get(BASE_URL + "/" + USER_SLEEPING_BAG_ID))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(toJson(equipmentReadDto)));
+                .andExpect(content().json(toJson(equipmentFullReadDto)))
+                .andExpect(jsonPath("$.backpacks", hasSize(2)));
     }
 
     @Test

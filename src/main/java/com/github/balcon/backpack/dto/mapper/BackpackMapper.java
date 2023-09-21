@@ -8,7 +8,7 @@ import com.github.balcon.backpack.model.Equipment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(uses = EquipmentMapper.class)
+@Mapper
 public interface BackpackMapper {
     BackpackReadDto toReadDto(Backpack backpack);
 

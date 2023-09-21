@@ -1,5 +1,6 @@
 package com.github.balcon.backpack.web.rest.user;
 
+import com.github.balcon.backpack.dto.EquipmentFullReadDto;
 import com.github.balcon.backpack.dto.EquipmentReadDto;
 import com.github.balcon.backpack.dto.EquipmentWriteDto;
 import com.github.balcon.backpack.service.EquipmentService;
@@ -26,7 +27,7 @@ public class EquipmentController {
     }
 
     @GetMapping("/{id}")
-    public EquipmentReadDto get(@PathVariable int id) {
+    public EquipmentFullReadDto get(@PathVariable int id) {
         // TODO: 16.09.2023 exception if not exist
         // TODO: 16.09.2023 exception if not owner
         return service.get(id).orElseThrow();
