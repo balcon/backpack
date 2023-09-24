@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
-    private static final String RESOURCE = "User";
+    protected static final String RESOURCE = "User";
 
     private final UserRepository repository;
     private final UserMapper dtoMapper;

@@ -7,11 +7,8 @@ import com.github.balcon.backpack.dto.mapper.EquipmentMapper;
 import com.github.balcon.backpack.model.Equipment;
 import com.github.balcon.backpack.repository.EquipmentRepository;
 import com.github.balcon.backpack.web.rest.BaseMvcTest;
-import com.github.balcon.backpack.web.rest.util.MockAuthId;
-import com.github.balcon.backpack.web.rest.util.MockAuthIdExtension;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.MediaType;
 
 import java.util.List;
@@ -28,13 +25,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RequiredArgsConstructor
-@ExtendWith(MockAuthIdExtension.class)
 class EquipmentControllerTest extends BaseMvcTest {
+    public static final EquipmentWriteDto writeDtoDummy = new EquipmentWriteDto("Dummy", null, 0);
+
     private final EquipmentMapper mapper;
     private final EquipmentRepository repository;
 
     @Test
-    @MockAuthId(id = USER_ID)
     void getAllOfAuthUser() throws Exception {
         List<EquipmentReadDto> equipmentReadDto = Stream.of(userTent, userSleepingBag, userSleepingPad)
                 .map(mapper::toReadDto)
@@ -47,7 +44,6 @@ class EquipmentControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void getById() throws Exception {
         EquipmentFullReadDto equipmentFullReadDto =
                 mapper.toFullReadDto(userSleepingBag.toBuilder()
@@ -61,7 +57,6 @@ class EquipmentControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void create() throws Exception {
         String name = "Star River 2";
         String manufacturer = "Naturehike";
@@ -83,7 +78,6 @@ class EquipmentControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void update() throws Exception {
         String name = "New name";
         String manufacturer = "New Manufacturer";
@@ -107,7 +101,6 @@ class EquipmentControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void deleteById() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/" + USER_TENT_ID))
                 .andDo(print())
@@ -118,7 +111,6 @@ class EquipmentControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void addBackpack() throws Exception {
         EquipmentFullReadDto equipmentFullReadDto = mapper.toFullReadDto(userTent.toBuilder()
                 .backpacks(List.of(userBackpack1, userBackpack2)).build());
@@ -133,7 +125,6 @@ class EquipmentControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void removeBackpack() throws Exception {
         EquipmentFullReadDto equipmentFullReadDto = mapper.toFullReadDto(userSleepingBag.toBuilder()
                 .backpacks(List.of(userBackpack1)).build());
@@ -148,7 +139,6 @@ class EquipmentControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void getNotFound() throws Exception {
         mockMvc.perform(get(BASE_URL + "/" + DUMMY_ID))
                 .andDo(print())
@@ -156,7 +146,6 @@ class EquipmentControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void getNotOwner() throws Exception {
         mockMvc.perform(get(BASE_URL + "/" + ADMIN_TENT_ID))
                 .andDo(print())
@@ -164,27 +153,24 @@ class EquipmentControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void updateNotFound() throws Exception {
         mockMvc.perform(put(BASE_URL + "/" + DUMMY_ID)
                         .contentType(APPLICATION_JSON)
-                        .content(toJson(new EquipmentWriteDto("Dummy", "Dummy", 0))))
+                        .content(toJson(writeDtoDummy)))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void updateNotOwner() throws Exception {
         mockMvc.perform(put(BASE_URL + "/" + ADMIN_TENT_ID)
                         .contentType(APPLICATION_JSON)
-                        .content(toJson(new EquipmentWriteDto("Dummy", "Dummy", 0))))
+                        .content(toJson(writeDtoDummy)))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void deleteNotFound() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/" + DUMMY_ID))
                 .andDo(print())
@@ -192,7 +178,6 @@ class EquipmentControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void deleteNotOwner() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/" + ADMIN_TENT_ID))
                 .andDo(print())
@@ -200,7 +185,13 @@ class EquipmentControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
+    void addBackpackNotFound() throws Exception {
+        mockMvc.perform(post(BASE_URL + "/" + USER_TENT_ID + COLLECTION + "/" + DUMMY_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void addBackpackNotOwner() throws Exception {
         mockMvc.perform(post(BASE_URL + "/" + USER_TENT_ID + COLLECTION + "/" + ADMIN_BACKPACK_1_ID))
                 .andDo(print())

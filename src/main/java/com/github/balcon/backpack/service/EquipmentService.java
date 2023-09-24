@@ -16,12 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class EquipmentService {
-    private static final String RESOURCE = "Equipment";
+    protected static final String RESOURCE = "Equipment";
 
     private final EquipmentRepository equipmentRepository;
     private final BackpackRepository backpackRepository;
@@ -43,8 +44,7 @@ public class EquipmentService {
     @Transactional
     public EquipmentReadDto create(EquipmentWriteDto equipmentWriteDto, int ownerId) {
         User user = userRepository.findById(ownerId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", ownerId));
-        // TODO: 16.09.2023 change mapper
+                .orElseThrow(() -> new ResourceNotFoundException(UserService.RESOURCE, ownerId));
         Equipment equipment = mapper.toEntity(equipmentWriteDto);
         equipment.setOwner(user);
         return mapper.toReadDto(equipmentRepository.saveAndFlush(equipment));
@@ -66,20 +66,22 @@ public class EquipmentService {
         equipmentRepository.deleteById(id);
     }
 
+    @Transactional
     public EquipmentFullReadDto addBackpack(int equipmentId, int backpackId, int ownerId) {
-        Backpack backpack = backpackRepository.findByIdAndOwnerId(backpackId, ownerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Backpack", backpackId));
-        return equipmentRepository.findByIdAndOwnerId(equipmentId, ownerId)
-                .map(equipment -> equipment.addBackpack(backpack))
-                .map(mapper::toFullReadDto)
-                .orElseThrow(() -> new ResourceNotFoundException(RESOURCE, equipmentId));
+        return manageBackpack(equipmentId, backpackId, ownerId, Equipment::addBackpack);
     }
 
+    @Transactional
     public EquipmentFullReadDto removeBackpack(int equipmentId, int backpackId, int ownerId) {
+        return manageBackpack(equipmentId, backpackId, ownerId, Equipment::removeBackpack);
+    }
+
+    private EquipmentFullReadDto manageBackpack(int equipmentId, int backpackId, int ownerId,
+                                                BiFunction<Equipment, Backpack, Equipment> action) {
         Backpack backpack = backpackRepository.findByIdAndOwnerId(backpackId, ownerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Backpack", backpackId));
+                .orElseThrow(() -> new ResourceNotFoundException(BackpackService.RESOURCE, backpackId));
         return equipmentRepository.findByIdAndOwnerId(equipmentId, ownerId)
-                .map(equipment -> equipment.removeBackpack(backpack))
+                .map(equipment -> action.apply(equipment, backpack))
                 .map(mapper::toFullReadDto)
                 .orElseThrow(() -> new ResourceNotFoundException(RESOURCE, backpackId));
     }

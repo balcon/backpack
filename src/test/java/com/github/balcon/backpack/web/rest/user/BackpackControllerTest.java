@@ -6,11 +6,8 @@ import com.github.balcon.backpack.dto.BackpackWriteDto;
 import com.github.balcon.backpack.dto.mapper.BackpackMapper;
 import com.github.balcon.backpack.repository.BackpackRepository;
 import com.github.balcon.backpack.web.rest.BaseMvcTest;
-import com.github.balcon.backpack.web.rest.util.MockAuthId;
-import com.github.balcon.backpack.web.rest.util.MockAuthIdExtension;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -26,13 +23,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RequiredArgsConstructor
-@ExtendWith(MockAuthIdExtension.class)
 class BackpackControllerTest extends BaseMvcTest {
+    public static final BackpackWriteDto writeDtoDummy = new BackpackWriteDto("Dummy");
+
     private final BackpackMapper mapper;
     private final BackpackRepository repository;
 
     @Test
-    @MockAuthId(id = USER_ID)
     void getAllOfAuthUser() throws Exception {
         List<BackpackReadDto> backpacksReadDto = Stream.of(userBackpack1, userBackpack2)
                 .map(mapper::toReadDto)
@@ -45,7 +42,6 @@ class BackpackControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void getById() throws Exception {
         BackpackFullReadDto backpackFullReadDto = mapper.toFullReadDto(userBackpack1);
 
@@ -58,11 +54,10 @@ class BackpackControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = ADMIN_ID)
     void create() throws Exception {
         String name = "New backpack";
         BackpackWriteDto backpackWriteDto = new BackpackWriteDto(name);
-        int backpacksCount = repository.findAllByOwnerId(ADMIN_ID).size();
+        int backpacksCount = repository.findAllByOwnerId(USER_ID).size();
 
         mockMvc.perform(post(BASE_URL)
                         .contentType(APPLICATION_JSON)
@@ -72,11 +67,10 @@ class BackpackControllerTest extends BaseMvcTest {
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.name").value(name));
 
-        assertThat(repository.findAllByOwnerId(ADMIN_ID)).hasSize(backpacksCount + 1);
+        assertThat(repository.findAllByOwnerId(USER_ID)).hasSize(backpacksCount + 1);
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void update() throws Exception {
         String name = "New name";
         BackpackWriteDto backpackWriteDto = new BackpackWriteDto(name);
@@ -93,19 +87,16 @@ class BackpackControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void deleteById() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/" + USER_BACKPACK_1_ID))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        // TODO: 18.09.2023 Flush repo in service???
         repository.flush();
 
         assertThat(repository.findById(USER_BACKPACK_1_ID)).isNotPresent();
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void addEquipment() throws Exception {
         BackpackFullReadDto backpackFullReadDto = mapper.toFullReadDto(userBackpack1.toBuilder()
                 .equipment(List.of(userSleepingBag, userSleepingPad, userTent)).build());
@@ -120,7 +111,6 @@ class BackpackControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void removeEquipment() throws Exception {
         BackpackFullReadDto backpackFullReadDto = mapper.toFullReadDto(userBackpack1.toBuilder()
                 .equipment(List.of(userSleepingBag)).build());
@@ -136,7 +126,6 @@ class BackpackControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void getNotFound() throws Exception {
         mockMvc.perform(get(BASE_URL + "/" + DUMMY_ID))
                 .andDo(print())
@@ -144,7 +133,6 @@ class BackpackControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void getNotOwner() throws Exception {
         mockMvc.perform(get(BASE_URL + "/" + ADMIN_BACKPACK_1_ID))
                 .andDo(print())
@@ -152,27 +140,24 @@ class BackpackControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void updateNotFound() throws Exception {
         mockMvc.perform(put(BASE_URL + "/" + DUMMY_ID)
                         .contentType(APPLICATION_JSON)
-                        .content(toJson(new BackpackWriteDto("Dummy"))))
+                        .content(toJson(writeDtoDummy)))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void updateNotOwner() throws Exception {
         mockMvc.perform(put(BASE_URL + "/" + ADMIN_BACKPACK_1_ID)
                         .contentType(APPLICATION_JSON)
-                        .content(toJson(new BackpackWriteDto("Dummy"))))
+                        .content(toJson(writeDtoDummy)))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void deleteNotFound() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/" + DUMMY_ID))
                 .andDo(print())
@@ -180,7 +165,6 @@ class BackpackControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
     void deleteNotOwner() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/" + ADMIN_BACKPACK_1_ID))
                 .andDo(print())
@@ -188,7 +172,13 @@ class BackpackControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @MockAuthId(id = USER_ID)
+    void addEquipmentNotFound() throws Exception {
+        mockMvc.perform(post(BASE_URL + "/" + USER_BACKPACK_1_ID + COLLECTION + "/" + DUMMY_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void addEquipmentNotOwner() throws Exception {
         mockMvc.perform(post(BASE_URL + "/" + USER_BACKPACK_1_ID + COLLECTION + "/" + ADMIN_TENT_ID))
                 .andDo(print())
