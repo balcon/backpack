@@ -3,8 +3,6 @@ package com.github.balcon.backpack.model;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +18,10 @@ public class Backpack extends BaseEntity {
 
     @Builder.Default
     @ToString.Exclude
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "backpack_equipment",
             joinColumns = @JoinColumn(name = "backpack_id"),
             inverseJoinColumns = @JoinColumn(name = "equipment_id"))
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Equipment> equipment = new ArrayList<>();
 
     @Setter

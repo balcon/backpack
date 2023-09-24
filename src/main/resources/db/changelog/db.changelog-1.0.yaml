@@ -1,0 +1,131 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0
+      author: K. Balykov
+      changes:
+        - createSequence:
+            sequenceName: main_seq
+            incrementBy: 1
+            startValue: 1000
+
+  - changeSet:
+      id: 1
+      author: K. Balykov
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: users_pk
+              - column:
+                  name: email
+                  type: varchar
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: users_email_uk
+              - column:
+                  name: name
+                  type: varchar
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: varchar
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 2
+      author: K. Balykov
+      changes:
+        - createTable:
+            tableName: equipment
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: equipment_pk
+              - column:
+                  name: owner_id
+                  type: integer
+                  constraints:
+                    foreignKeyName: equipment_users_fk
+                    referencedTableName: users
+                    referencedColumnNames: id
+                    deleteCascade: true
+              - column:
+                  name: name
+                  type: varchar
+                  constraints:
+                    nullable: false
+              - column:
+                  name: manufacturer
+                  type: varchar
+                  constraints:
+                    nullable: true
+              - column:
+                  name: weight
+                  type: integer
+                  defaultValueNumeric: '0'
+
+  - changeSet:
+      id: 3
+      author: K. Balykov
+      changes:
+        - createTable:
+            tableName: backpack
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: backpack_pk
+              - column:
+                  name: owner_id
+                  type: integer
+                  constraints:
+                    foreignKeyName: backpack_users_fk
+                    referencedTableName: users
+                    referencedColumnNames: id
+                    unique: true
+                    uniqueConstraintName: backpack_owner_name_uk
+                    deleteCascade: true
+              - column:
+                  name: name
+                  type: varchar
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: backpack_owner_name_uk
+
+  - changeSet:
+      id: 4
+      author: K. Balykov
+      changes:
+        - createTable:
+            tableName: backpack_equipment
+            columns:
+              - column:
+                  name: backpack_id
+                  type: integer
+                  constraints:
+                    foreignKeyName: equipment_backpack_fk
+                    referencedTableName: backpack
+                    referencedColumnNames: id
+                    deleteCascade: true
+              - column:
+                  name: equipment_id
+                  type: integer
+                  constraints:
+                    foreignKeyName: backpack_equipment_fk
+                    referencedTableName: equipment
+                    referencedColumnNames: id
+                    deleteCascade: true
