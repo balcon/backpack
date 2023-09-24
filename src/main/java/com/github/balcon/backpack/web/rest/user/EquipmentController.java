@@ -29,9 +29,7 @@ public class EquipmentController {
 
     @GetMapping("/{id}")
     public EquipmentFullReadDto get(@PathVariable int id) {
-        // TODO: 16.09.2023 exception if not exist
-        // TODO: 16.09.2023 exception if not owner
-        return service.get(id).orElseThrow();
+        return service.get(id, authUserId);
     }
 
     @PostMapping
@@ -56,12 +54,12 @@ public class EquipmentController {
     @ResponseStatus(HttpStatus.CREATED)
     public EquipmentFullReadDto addBackpack(@PathVariable int equipmentId,
                                             @PathVariable int backpackId) {
-        return service.addBackpack(equipmentId, backpackId, authUserId).orElseThrow();
+        return service.addBackpack(equipmentId, backpackId, authUserId);
     }
 
     @DeleteMapping("/{equipmentId}" + COLLECTION + "/{backpackId}")
     public EquipmentFullReadDto removeBackpack(@PathVariable int equipmentId,
                                                @PathVariable int backpackId) {
-        return service.removeBackpack(equipmentId, backpackId, authUserId).orElseThrow();
+        return service.removeBackpack(equipmentId, backpackId, authUserId);
     }
 }

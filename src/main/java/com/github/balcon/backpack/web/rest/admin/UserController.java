@@ -27,8 +27,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserReadDto get(@PathVariable int id) {
-        // TODO: 11.09.2023 Throw exception
-        return service.get(id).orElseThrow();
+        return service.get(id);
     }
 
     @PostMapping

@@ -106,7 +106,7 @@ class BackpackControllerTest extends BaseMvcTest {
 
     @Test
     @MockAuthId(id = USER_ID)
-    void addEquipmentToBackpack() throws Exception {
+    void addEquipment() throws Exception {
         BackpackFullReadDto backpackFullReadDto = mapper.toFullReadDto(userBackpack1.toBuilder()
                 .equipment(List.of(userSleepingBag, userSleepingPad, userTent)).build());
         int equipmentCount = repository.findById(USER_BACKPACK_1_ID).orElseThrow().getEquipment().size();
@@ -121,7 +121,7 @@ class BackpackControllerTest extends BaseMvcTest {
 
     @Test
     @MockAuthId(id = USER_ID)
-    void removeEquipmentFromBackpack() throws Exception {
+    void removeEquipment() throws Exception {
         BackpackFullReadDto backpackFullReadDto = mapper.toFullReadDto(userBackpack1.toBuilder()
                 .equipment(List.of(userSleepingBag)).build());
         int equipmentCount = repository.findById(USER_BACKPACK_1_ID).orElseThrow().getEquipment().size();
@@ -133,5 +133,65 @@ class BackpackControllerTest extends BaseMvcTest {
 
         assertThat(repository.findById(USER_BACKPACK_1_ID).orElseThrow().getEquipment())
                 .hasSize(equipmentCount - 1);
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void getNotFound() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/" + DUMMY_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void getNotOwner() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/" + ADMIN_BACKPACK_1_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void updateNotFound() throws Exception {
+        mockMvc.perform(put(BASE_URL + "/" + DUMMY_ID)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(new BackpackWriteDto("Dummy"))))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void updateNotOwner() throws Exception {
+        mockMvc.perform(put(BASE_URL + "/" + ADMIN_BACKPACK_1_ID)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(new BackpackWriteDto("Dummy"))))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void deleteNotFound() throws Exception {
+        mockMvc.perform(delete(BASE_URL + "/" + DUMMY_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void deleteNotOwner() throws Exception {
+        mockMvc.perform(delete(BASE_URL + "/" + ADMIN_BACKPACK_1_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void addEquipmentNotOwner() throws Exception {
+        mockMvc.perform(post(BASE_URL + "/" + USER_BACKPACK_1_ID + COLLECTION + "/" + ADMIN_TENT_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }

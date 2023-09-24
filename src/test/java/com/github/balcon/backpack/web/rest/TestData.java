@@ -2,8 +2,8 @@ package com.github.balcon.backpack.web.rest;
 
 import com.github.balcon.backpack.model.Backpack;
 import com.github.balcon.backpack.model.Equipment;
-import com.github.balcon.backpack.model.User;
 import com.github.balcon.backpack.model.Role;
+import com.github.balcon.backpack.model.User;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
@@ -15,6 +15,7 @@ public class TestData {
     public static final int USER_SLEEPING_PAD_ID = 3;
     public static final int ADMIN_TENT_ID = 4;
     public static final int ADMIN_SLEEPING_BAG_ID = 5;
+    public static final int DUMMY_ID = 0;
 
     public static final int USER_BACKPACK_1_ID = 50;
     public static final int USER_BACKPACK_2_ID = 51;

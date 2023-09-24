@@ -97,4 +97,27 @@ class UserControllerTest extends BaseMvcTest {
 
         assertThat(repository.findById(USER_ID)).isNotPresent();
     }
+
+    @Test
+    void getNotFound() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/" + DUMMY_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateNotFound() throws Exception {
+        mockMvc.perform(put(BASE_URL + "/" + DUMMY_ID)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(new UserUpdateDto("New Name", Role.USER))))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteNotFound() throws Exception {
+        mockMvc.perform(delete(BASE_URL + "/" + DUMMY_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 }

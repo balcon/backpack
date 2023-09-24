@@ -29,8 +29,7 @@ public class BackpackController {
 
     @GetMapping("/{id}")
     public BackpackFullReadDto get(@PathVariable int id) {
-        return service.get(id, authUserId).orElseThrow();
-        // TODO: 17.09.2023 throw exception
+        return service.get(id, authUserId);
     }
 
     @PostMapping
@@ -42,7 +41,7 @@ public class BackpackController {
     @PutMapping("/{id}")
     public BackpackReadDto update(@PathVariable int id,
                                   @RequestBody BackpackWriteDto backpackWriteDto) {
-        return service.update(id, backpackWriteDto);
+        return service.update(id, backpackWriteDto, authUserId);
     }
 
     @DeleteMapping("/{id}")
@@ -55,14 +54,12 @@ public class BackpackController {
     @ResponseStatus(HttpStatus.CREATED)
     public BackpackFullReadDto addEquipment(@PathVariable int backpackId,
                                             @PathVariable int equipmentId) {
-        return service.addEquipment(backpackId, equipmentId, authUserId).orElseThrow();
-        // TODO: 19.09.2023 throw exception
+        return service.addEquipment(backpackId, equipmentId, authUserId);
     }
 
     @DeleteMapping("/{backpackId}" + COLLECTION + "/{equipmentId}")
     public BackpackFullReadDto removeEquipment(@PathVariable int backpackId,
                                                @PathVariable int equipmentId) {
-        return service.removeEquipment(backpackId, equipmentId, authUserId).orElseThrow();
-        // TODO: 19.09.2023 Throw exception
+        return service.removeEquipment(backpackId, equipmentId, authUserId);
     }
 }

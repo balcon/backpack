@@ -22,6 +22,7 @@ import static com.github.balcon.backpack.web.rest.user.EquipmentController.BASE_
 import static com.github.balcon.backpack.web.rest.user.EquipmentController.COLLECTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -118,7 +119,7 @@ class EquipmentControllerTest extends BaseMvcTest {
 
     @Test
     @MockAuthId(id = USER_ID)
-    void addBackpackContainingEquipment() throws Exception {
+    void addBackpack() throws Exception {
         EquipmentFullReadDto equipmentFullReadDto = mapper.toFullReadDto(userTent.toBuilder()
                 .backpacks(List.of(userBackpack1, userBackpack2)).build());
         int backpackCount = repository.findById(USER_TENT_ID).orElseThrow().getBackpacks().size();
@@ -133,7 +134,7 @@ class EquipmentControllerTest extends BaseMvcTest {
 
     @Test
     @MockAuthId(id = USER_ID)
-    void removeBackpackContainingEquipment() throws Exception {
+    void removeBackpack() throws Exception {
         EquipmentFullReadDto equipmentFullReadDto = mapper.toFullReadDto(userSleepingBag.toBuilder()
                 .backpacks(List.of(userBackpack1)).build());
         int backpackCount = repository.findById(USER_SLEEPING_BAG_ID).orElseThrow().getBackpacks().size();
@@ -144,5 +145,65 @@ class EquipmentControllerTest extends BaseMvcTest {
                 .andExpect(content().json(toJson(equipmentFullReadDto)));
 
         assertThat(repository.findById(USER_SLEEPING_BAG_ID).orElseThrow().getBackpacks().size()).isEqualTo(backpackCount - 1);
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void getNotFound() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/" + DUMMY_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void getNotOwner() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/" + ADMIN_TENT_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void updateNotFound() throws Exception {
+        mockMvc.perform(put(BASE_URL + "/" + DUMMY_ID)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(new EquipmentWriteDto("Dummy", "Dummy", 0))))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void updateNotOwner() throws Exception {
+        mockMvc.perform(put(BASE_URL + "/" + ADMIN_TENT_ID)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(new EquipmentWriteDto("Dummy", "Dummy", 0))))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void deleteNotFound() throws Exception {
+        mockMvc.perform(delete(BASE_URL + "/" + DUMMY_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void deleteNotOwner() throws Exception {
+        mockMvc.perform(delete(BASE_URL + "/" + ADMIN_TENT_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void addBackpackNotOwner() throws Exception {
+        mockMvc.perform(post(BASE_URL + "/" + USER_TENT_ID + COLLECTION + "/" + ADMIN_BACKPACK_1_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }
