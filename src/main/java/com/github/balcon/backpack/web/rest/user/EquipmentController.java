@@ -18,6 +18,7 @@ import static com.github.balcon.backpack.config.SecurityConfig.authUserId;
 @RequiredArgsConstructor
 public class EquipmentController {
     public static final String BASE_URL = API_URL + "/user/equipments";
+    public static final String COLLECTION = "/backpacks";
 
     private final EquipmentService service;
 
@@ -49,5 +50,18 @@ public class EquipmentController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         service.delete(id, authUserId);
+    }
+
+    @PostMapping("/{equipmentId}" + COLLECTION + "/{backpackId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public EquipmentFullReadDto addBackpack(@PathVariable int equipmentId,
+                                            @PathVariable int backpackId) {
+        return service.addBackpack(equipmentId, backpackId, authUserId).orElseThrow();
+    }
+
+    @DeleteMapping("/{equipmentId}" + COLLECTION + "/{backpackId}")
+    public EquipmentFullReadDto removeBackpack(@PathVariable int equipmentId,
+                                               @PathVariable int backpackId) {
+        return service.removeBackpack(equipmentId, backpackId, authUserId).orElseThrow();
     }
 }

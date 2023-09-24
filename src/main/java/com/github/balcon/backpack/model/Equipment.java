@@ -29,4 +29,14 @@ public class Equipment extends BaseEntity {
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
+
+    public Equipment addBackpack(Backpack backpack) {
+        backpacks.add(backpack);
+        return this;
+    }
+
+    public Equipment removeBackpack(Backpack backpack) {
+        backpacks.remove(backpack);
+        return this;
+    }
 }

@@ -4,8 +4,10 @@ import com.github.balcon.backpack.dto.EquipmentFullReadDto;
 import com.github.balcon.backpack.dto.EquipmentReadDto;
 import com.github.balcon.backpack.dto.EquipmentWriteDto;
 import com.github.balcon.backpack.dto.mapper.EquipmentMapper;
+import com.github.balcon.backpack.model.Backpack;
 import com.github.balcon.backpack.model.Equipment;
 import com.github.balcon.backpack.model.User;
+import com.github.balcon.backpack.repository.BackpackRepository;
 import com.github.balcon.backpack.repository.EquipmentRepository;
 import com.github.balcon.backpack.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class EquipmentService {
     private final EquipmentRepository equipmentRepository;
+    private final BackpackRepository backpackRepository;
     private final UserRepository userRepository;
     private final EquipmentMapper mapper;
 
@@ -61,5 +64,21 @@ public class EquipmentService {
         // TODO: 16.09.2023 check if not owner
         equipmentRepository.deleteById(id);
         // TODO: 16.09.2023 Exception if not found
+    }
+
+    public Optional<EquipmentFullReadDto> addBackpack(int equipmentId, int backpackId, int authUserId) {
+        Backpack backpack = backpackRepository.findById(backpackId).orElseThrow();
+        return equipmentRepository.findById(equipmentId)
+                .map(equipment -> equipment.addBackpack(backpack))
+                .map(mapper::toFullReadDto);
+        // TODO: 9/24/2023 Exceptions, not found 
+    }
+
+    public Optional<EquipmentFullReadDto> removeBackpack(int equipmentId, int backpackId, int authUserId) {
+        Backpack backpack = backpackRepository.findById(backpackId).orElseThrow();
+        return equipmentRepository.findById(equipmentId)
+                .map(equipment -> equipment.removeBackpack(backpack))
+                .map(mapper::toFullReadDto);
+        // TODO: 9/24/2023 Exceptions 
     }
 }

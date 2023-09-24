@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import static com.github.balcon.backpack.web.rest.TestData.*;
 import static com.github.balcon.backpack.web.rest.user.EquipmentController.BASE_URL;
+import static com.github.balcon.backpack.web.rest.user.EquipmentController.COLLECTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -113,5 +114,35 @@ class EquipmentControllerTest extends BaseMvcTest {
         repository.flush();
 
         assertThat(repository.findById(USER_TENT_ID)).isNotPresent();
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void addBackpackContainingEquipment() throws Exception {
+        EquipmentFullReadDto equipmentFullReadDto = mapper.toFullReadDto(userTent.toBuilder()
+                .backpacks(List.of(userBackpack1, userBackpack2)).build());
+        int backpackCount = repository.findById(USER_TENT_ID).orElseThrow().getBackpacks().size();
+
+        mockMvc.perform(post(BASE_URL + "/" + USER_TENT_ID + COLLECTION + "/" + USER_BACKPACK_1_ID))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().json(toJson(equipmentFullReadDto)));
+
+        assertThat(repository.findById(USER_SLEEPING_BAG_ID).orElseThrow().getBackpacks().size()).isEqualTo(backpackCount + 1);
+    }
+
+    @Test
+    @MockAuthId(id = USER_ID)
+    void removeBackpackContainingEquipment() throws Exception {
+        EquipmentFullReadDto equipmentFullReadDto = mapper.toFullReadDto(userSleepingBag.toBuilder()
+                .backpacks(List.of(userBackpack1)).build());
+        int backpackCount = repository.findById(USER_SLEEPING_BAG_ID).orElseThrow().getBackpacks().size();
+
+        mockMvc.perform(delete(BASE_URL + "/" + USER_SLEEPING_BAG_ID + COLLECTION + "/" + USER_BACKPACK_2_ID))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(toJson(equipmentFullReadDto)));
+
+        assertThat(repository.findById(USER_SLEEPING_BAG_ID).orElseThrow().getBackpacks().size()).isEqualTo(backpackCount - 1);
     }
 }

@@ -53,15 +53,15 @@ public class BackpackController {
 
     @PostMapping("/{backpackId}" + COLLECTION + "/{equipmentId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public BackpackFullReadDto addEquipmentToBackpack(@PathVariable int backpackId,
-                                                      @PathVariable int equipmentId) {
+    public BackpackFullReadDto addEquipment(@PathVariable int backpackId,
+                                            @PathVariable int equipmentId) {
         return service.addEquipment(backpackId, equipmentId, authUserId).orElseThrow();
         // TODO: 19.09.2023 throw exception
     }
 
     @DeleteMapping("/{backpackId}" + COLLECTION + "/{equipmentId}")
-    public BackpackFullReadDto removeEquipmentFromBackpack(@PathVariable int backpackId,
-                                                           @PathVariable int equipmentId) {
+    public BackpackFullReadDto removeEquipment(@PathVariable int backpackId,
+                                               @PathVariable int equipmentId) {
         return service.removeEquipment(backpackId, equipmentId, authUserId).orElseThrow();
         // TODO: 19.09.2023 Throw exception
     }

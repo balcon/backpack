@@ -28,14 +28,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RequiredArgsConstructor
 @ExtendWith(MockAuthIdExtension.class)
 class BackpackControllerTest extends BaseMvcTest {
-    private final BackpackMapper backpackMapper;
+    private final BackpackMapper mapper;
     private final BackpackRepository repository;
 
     @Test
     @MockAuthId(id = USER_ID)
     void getAllOfAuthUser() throws Exception {
         List<BackpackReadDto> backpacksReadDto = Stream.of(userBackpack1, userBackpack2)
-                .map(backpackMapper::toReadDto)
+                .map(mapper::toReadDto)
                 .toList();
 
         mockMvc.perform(get(BASE_URL))
@@ -47,7 +47,7 @@ class BackpackControllerTest extends BaseMvcTest {
     @Test
     @MockAuthId(id = USER_ID)
     void getById() throws Exception {
-        BackpackFullReadDto backpackFullReadDto = backpackMapper.toFullReadDto(userBackpack1);
+        BackpackFullReadDto backpackFullReadDto = mapper.toFullReadDto(userBackpack1);
 
         mockMvc.perform(get(BASE_URL + "/" + USER_BACKPACK_1_ID))
                 .andDo(print())
@@ -107,7 +107,7 @@ class BackpackControllerTest extends BaseMvcTest {
     @Test
     @MockAuthId(id = USER_ID)
     void addEquipmentToBackpack() throws Exception {
-        BackpackFullReadDto backpackFullReadDto = backpackMapper.toFullReadDto(userBackpack1.toBuilder()
+        BackpackFullReadDto backpackFullReadDto = mapper.toFullReadDto(userBackpack1.toBuilder()
                 .equipment(List.of(userSleepingBag, userSleepingPad, userTent)).build());
         int equipmentCount = repository.findById(USER_BACKPACK_1_ID).orElseThrow().getEquipment().size();
 
@@ -122,7 +122,7 @@ class BackpackControllerTest extends BaseMvcTest {
     @Test
     @MockAuthId(id = USER_ID)
     void removeEquipmentFromBackpack() throws Exception {
-        BackpackFullReadDto backpackFullReadDto = backpackMapper.toFullReadDto(userBackpack1.toBuilder()
+        BackpackFullReadDto backpackFullReadDto = mapper.toFullReadDto(userBackpack1.toBuilder()
                 .equipment(List.of(userSleepingBag)).build());
         int equipmentCount = repository.findById(USER_BACKPACK_1_ID).orElseThrow().getEquipment().size();
 
