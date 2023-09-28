@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository repository;
     private final UserMapper dtoMapper;
+    private final PasswordEncoder encoder;
 
     public List<UserReadDto> getAll() {
         return repository.findAll().stream()
@@ -40,8 +42,9 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public UserReadDto create(UserCreateDto userCreateDto) {
-        User newUser = dtoMapper.toEntity(userCreateDto);
-        return dtoMapper.toReadDto(repository.saveAndFlush(newUser));
+        User user = dtoMapper.toEntity(userCreateDto);
+        user.setPassword(encoder.encode(user.getPassword()));
+        return dtoMapper.toReadDto(repository.saveAndFlush(user));
     }
 
     @Transactional
