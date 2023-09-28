@@ -24,15 +24,17 @@ public class TestData {
     public static final int ADMIN_ID = 100;
     public static final int USER_ID = 101;
 
+    public static final String ADMIN_EMAIL = "admin@mail.ru";
     public User admin = User.builder()
             .id(ADMIN_ID)
-            .email("admin@mail.ru")
+            .email(ADMIN_EMAIL)
             .name("Admin")
             .role(Role.ADMIN).build();
 
+    public static final String USER_EMAIL = "user@mail.ru";
     public User user = User.builder()
             .id(USER_ID)
-            .email("user@mail.ru")
+            .email(USER_EMAIL)
             .name("User")
             .role(Role.USER).build();
 

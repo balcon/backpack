@@ -10,6 +10,7 @@ import com.github.balcon.backpack.repository.UserRepository;
 import com.github.balcon.backpack.web.rest.BaseMvcTest;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -23,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RequiredArgsConstructor
+@WithUserDetails(ADMIN_EMAIL)
 class UserControllerTest extends BaseMvcTest {
     private final UserMapper mapper;
     private final UserRepository repository;
@@ -51,9 +53,10 @@ class UserControllerTest extends BaseMvcTest {
 
     @Test
     void create() throws Exception {
-        String mail = "new@mail.ru";
+        String email = "new@mail.ru";
+        String password = "password";
         String name = "New user";
-        UserCreateDto userCreateDto = new UserCreateDto(mail, name);
+        UserCreateDto userCreateDto = new UserCreateDto(email, password, name);
 
         mockMvc.perform(post(BASE_URL)
                         .contentType(APPLICATION_JSON)
@@ -64,7 +67,7 @@ class UserControllerTest extends BaseMvcTest {
                 .andExpect(jsonPath("$.name").value(name))
                 .andExpect(jsonPath("$.role").value(Role.USER.name()));
 
-        assertThat(repository.findByEmail(mail)).isPresent();
+        assertThat(repository.findByEmail(email)).isPresent();
     }
 
     @Test

@@ -10,6 +10,7 @@ import com.github.balcon.backpack.web.rest.BaseMvcTest;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -25,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RequiredArgsConstructor
+@WithUserDetails(USER_EMAIL)
 class EquipmentControllerTest extends BaseMvcTest {
     public static final EquipmentWriteDto writeDtoDummy = new EquipmentWriteDto("Dummy", null, 0);
 

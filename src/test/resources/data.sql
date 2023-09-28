@@ -1,6 +1,6 @@
-INSERT INTO users (id, email, name, role)
-VALUES (100, 'admin@mail.ru', 'Admin', 'ADMIN'),
-       (101, 'user@mail.ru', 'User', 'USER');
+INSERT INTO users (id, email, name, role, password)
+VALUES (100, 'admin@mail.ru', 'Admin', 'ADMIN', '{noop}pass'),
+       (101, 'user@mail.ru', 'User', 'USER', '{noop}pass');
 
 INSERT INTO equipment (id, name, manufacturer, weight, owner_id)
 VALUES (1, 'Huba Tour 2', 'MSR', 2500, 101),
