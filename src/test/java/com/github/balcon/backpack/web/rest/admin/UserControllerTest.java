@@ -10,6 +10,7 @@ import com.github.balcon.backpack.repository.UserRepository;
 import com.github.balcon.backpack.web.rest.BaseMvcTest;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 import java.util.List;
@@ -122,5 +123,21 @@ class UserControllerTest extends BaseMvcTest {
         mockMvc.perform(delete(BASE_URL + "/" + DUMMY_ID))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void unauthorizedRequest() throws Exception {
+        mockMvc.perform(get(BASE_URL))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithUserDetails(USER_EMAIL)
+    void forbiddenRequest() throws Exception {
+        mockMvc.perform(get(BASE_URL))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 }

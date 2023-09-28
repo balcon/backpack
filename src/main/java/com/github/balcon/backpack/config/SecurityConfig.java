@@ -12,13 +12,10 @@ import static com.github.balcon.backpack.config.ApplicationConfig.API_URL;
 
 @Configuration
 public class SecurityConfig {
-    // Imitates an authenticated user id until Spring Security not implement
-    public static final int authUserId = 101;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(security -> security
-                        .requestMatchers(API_URL + "/admin").hasAuthority(Role.ADMIN.getAuthority())
+                        .requestMatchers(API_URL + "/admin/**").hasAuthority(Role.ADMIN.getAuthority())
                         .anyRequest().hasAnyAuthority(Role.USER.getAuthority(), Role.ADMIN.getAuthority()))
                 .httpBasic(Customizer.withDefaults())
                 .csrf(CsrfConfigurer::disable)

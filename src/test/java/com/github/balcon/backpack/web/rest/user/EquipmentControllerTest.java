@@ -10,6 +10,7 @@ import com.github.balcon.backpack.web.rest.BaseMvcTest;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 import java.util.List;
@@ -36,6 +37,19 @@ class EquipmentControllerTest extends BaseMvcTest {
     @Test
     void getAllOfAuthUser() throws Exception {
         List<EquipmentReadDto> equipmentReadDto = Stream.of(userTent, userSleepingBag, userSleepingPad)
+                .map(mapper::toReadDto)
+                .toList();
+
+        mockMvc.perform(get(BASE_URL))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(toJson(equipmentReadDto)));
+    }
+
+    @Test
+    @WithUserDetails(ADMIN_EMAIL)
+    void getAllOfAdmin() throws Exception {
+        List<EquipmentReadDto> equipmentReadDto = Stream.of(adminTent, adminSleepingBag)
                 .map(mapper::toReadDto)
                 .toList();
 
@@ -198,5 +212,13 @@ class EquipmentControllerTest extends BaseMvcTest {
         mockMvc.perform(post(BASE_URL + "/" + USER_TENT_ID + COLLECTION + "/" + ADMIN_BACKPACK_1_ID))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void unauthorizedRequest() throws Exception {
+        mockMvc.perform(get(BASE_URL))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 }
