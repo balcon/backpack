@@ -109,7 +109,8 @@ class BackpackControllerTest extends BaseMvcTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().json(toJson(backpackFullReadDto)));
 
-        assertThat(repository.findById(USER_BACKPACK_1_ID).orElseThrow().getEquipment()).hasSize(equipmentCount + 1);
+        assertThat(repository.findById(USER_BACKPACK_1_ID).orElseThrow().getEquipment())
+                .hasSize(equipmentCount + 1);
     }
 
     @Test
@@ -186,4 +187,37 @@ class BackpackControllerTest extends BaseMvcTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void createValidationError() throws Exception {
+        String name = "";
+        BackpackWriteDto backpackWriteDto = new BackpackWriteDto(name);
+        int backpacksCount = repository.findAllByOwnerId(USER_ID).size();
+
+        mockMvc.perform(post(BASE_URL)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(backpackWriteDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.name").hasJsonPath());
+
+        assertThat(repository.findAllByOwnerId(USER_ID)).hasSize(backpacksCount);
+    }
+
+    @Test
+    void updateValidationError() throws Exception {
+        String name = "";
+        BackpackWriteDto backpackWriteDto = new BackpackWriteDto(name);
+
+        mockMvc.perform(put(BASE_URL + "/" + USER_BACKPACK_1_ID)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(backpackWriteDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.name").hasJsonPath());
+
+        assertThat(repository.findById(USER_BACKPACK_1_ID).orElseThrow().getName())
+                .isEqualTo(userBackpack1.getName());
+    }
 }
+

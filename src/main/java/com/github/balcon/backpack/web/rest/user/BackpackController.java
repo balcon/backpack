@@ -5,6 +5,7 @@ import com.github.balcon.backpack.dto.BackpackFullReadDto;
 import com.github.balcon.backpack.dto.BackpackReadDto;
 import com.github.balcon.backpack.dto.BackpackWriteDto;
 import com.github.balcon.backpack.service.BackpackService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,14 +37,14 @@ public class BackpackController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BackpackReadDto create(@RequestBody BackpackWriteDto backpackWriteDto,
+    public BackpackReadDto create(@Valid @RequestBody BackpackWriteDto backpackWriteDto,
                                   @AuthenticationPrincipal AuthenticatedUser authUser) {
         return service.create(backpackWriteDto, authUser.getId());
     }
 
     @PutMapping("/{id}")
     public BackpackReadDto update(@PathVariable int id,
-                                  @RequestBody BackpackWriteDto backpackWriteDto,
+                                  @Valid @RequestBody BackpackWriteDto backpackWriteDto,
                                   @AuthenticationPrincipal AuthenticatedUser authUser) {
         return service.update(id, backpackWriteDto, authUser.getId());
     }

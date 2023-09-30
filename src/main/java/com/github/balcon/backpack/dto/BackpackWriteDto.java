@@ -1,4 +1,7 @@
 package com.github.balcon.backpack.dto;
 
-public record BackpackWriteDto(String name) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public record BackpackWriteDto(@NotBlank @Size(max = 64) String name) {
 }

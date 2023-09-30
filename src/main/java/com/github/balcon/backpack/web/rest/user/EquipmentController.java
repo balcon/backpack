@@ -5,6 +5,7 @@ import com.github.balcon.backpack.dto.EquipmentFullReadDto;
 import com.github.balcon.backpack.dto.EquipmentReadDto;
 import com.github.balcon.backpack.dto.EquipmentWriteDto;
 import com.github.balcon.backpack.service.EquipmentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,14 +37,14 @@ public class EquipmentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EquipmentReadDto create(@RequestBody EquipmentWriteDto equipmentWriteDto,
+    public EquipmentReadDto create(@Valid @RequestBody EquipmentWriteDto equipmentWriteDto,
                                    @AuthenticationPrincipal AuthenticatedUser authUser) {
         return service.create(equipmentWriteDto, authUser.getId());
     }
 
     @PutMapping("/{id}")
     public EquipmentReadDto update(@PathVariable int id,
-                                   @RequestBody EquipmentWriteDto equipmentWriteDto,
+                                   @Valid @RequestBody EquipmentWriteDto equipmentWriteDto,
                                    @AuthenticationPrincipal AuthenticatedUser authUser) {
         return service.update(id, equipmentWriteDto, authUser.getId());
     }

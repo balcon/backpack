@@ -221,4 +221,45 @@ class EquipmentControllerTest extends BaseMvcTest {
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
+
+    @Test
+    void createValidationErrors() throws Exception {
+        String name = "";
+        String manufacturer = "";
+        int weight = -10;
+        EquipmentWriteDto equipmentWriteDto = new EquipmentWriteDto(name, manufacturer, weight);
+        int equipmentCount = repository.findAllByOwnerId(USER_ID).size();
+
+        mockMvc.perform(post(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(equipmentWriteDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.name").hasJsonPath())
+                .andExpect(jsonPath("$.weight").hasJsonPath());
+
+        assertThat(repository.findAllByOwnerId(USER_ID)).hasSize(equipmentCount);
+    }
+
+    @Test
+    void updateValidationErrors() throws Exception {
+        String name = "";
+        String manufacturer = "";
+        int weight = -10;
+        EquipmentWriteDto equipmentWriteDto = new EquipmentWriteDto(name, manufacturer, weight);
+
+        mockMvc.perform(put(BASE_URL + "/" + USER_TENT_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJson(equipmentWriteDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.name").hasJsonPath())
+                .andExpect(jsonPath("$.weight").hasJsonPath());
+
+        Equipment updatedEquipment = repository.findById(USER_TENT_ID).orElseThrow();
+
+        assertThat(updatedEquipment.getName()).isEqualTo(userTent.getName());
+        assertThat(updatedEquipment.getManufacturer()).isEqualTo(userTent.getManufacturer());
+        assertThat(updatedEquipment.getWeight()).isEqualTo(userTent.getWeight());
+    }
 }

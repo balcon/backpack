@@ -88,8 +88,8 @@ class UserControllerTest extends BaseMvcTest {
 
         User updatedUser = repository.findById(USER_ID).orElseThrow();
 
-        assertThat(updatedUser.getRole()).isEqualTo(role);
         assertThat(updatedUser.getName()).isEqualTo(name);
+        assertThat(updatedUser.getRole()).isEqualTo(role);
     }
 
     @Test
@@ -139,5 +139,45 @@ class UserControllerTest extends BaseMvcTest {
         mockMvc.perform(get(BASE_URL))
                 .andDo(print())
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void createValidationError() throws Exception {
+        String email = "Not Email";
+        String password = "Short";
+        String name = "";
+        UserCreateDto userCreateDto = new UserCreateDto(email, password, name);
+
+        mockMvc.perform(post(BASE_URL)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(userCreateDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.email").hasJsonPath())
+                .andExpect(jsonPath("$.password").hasJsonPath())
+                .andExpect(jsonPath("$.name").hasJsonPath());
+
+        assertThat(repository.findByEmail(email)).isNotPresent();
+    }
+
+    @Test
+    void updateValidationError() throws Exception {
+        String name = "";
+        Role role = null;
+        UserUpdateDto userUpdateDto = new UserUpdateDto(name, role);
+
+        mockMvc.perform(put(BASE_URL + "/" + USER_ID)
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(userUpdateDto)))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.name").hasJsonPath())
+                .andExpect(jsonPath("$.role").hasJsonPath());
+        // TODO: 9/30/2023 Role enum validation
+
+        User updatedUser = repository.findById(USER_ID).orElseThrow();
+
+        assertThat(updatedUser.getName()).isEqualTo(user.getName());
+        assertThat(updatedUser.getRole()).isEqualTo(user.getRole());
     }
 }

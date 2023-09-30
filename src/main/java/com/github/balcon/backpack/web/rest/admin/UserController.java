@@ -4,6 +4,7 @@ import com.github.balcon.backpack.dto.UserCreateDto;
 import com.github.balcon.backpack.dto.UserReadDto;
 import com.github.balcon.backpack.dto.UserUpdateDto;
 import com.github.balcon.backpack.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -32,13 +33,13 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserReadDto create(@RequestBody UserCreateDto userCreateDto) {
+    public UserReadDto create(@Valid @RequestBody UserCreateDto userCreateDto) {
         return service.create(userCreateDto);
     }
 
     @PutMapping("/{id}")
     public UserReadDto update(@PathVariable int id,
-                              @RequestBody UserUpdateDto userUpdateDto) {
+                              @Valid @RequestBody UserUpdateDto userUpdateDto) {
         return service.update(id, userUpdateDto);
     }
 
