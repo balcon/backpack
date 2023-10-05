@@ -180,4 +180,24 @@ class UserControllerTest extends BaseMvcTest {
         assertThat(updatedUser.getName()).isEqualTo(user.getName());
         assertThat(updatedUser.getRole()).isEqualTo(user.getRole());
     }
+
+    @Test
+    void updateParsingError() throws Exception {
+        String userJson = """
+                {
+                    "name":"",
+                    "role":"NOT_ROLE"
+                }
+                """;
+
+        mockMvc.perform(put(BASE_URL + "/" + USER_ID)
+                        .contentType(APPLICATION_JSON)
+                        .content(userJson))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+        User updatedUser = repository.findById(USER_ID).orElseThrow();
+
+        assertThat(updatedUser.getRole()).isEqualTo(user.getRole());
+    }
 }

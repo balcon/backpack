@@ -5,7 +5,7 @@ import com.github.balcon.backpack.dto.UserCreateDto;
 import com.github.balcon.backpack.dto.UserReadDto;
 import com.github.balcon.backpack.dto.UserUpdateDto;
 import com.github.balcon.backpack.dto.mapper.UserMapper;
-import com.github.balcon.backpack.exceprion.ResourceNotFoundException;
+import com.github.balcon.backpack.exception.ResourceNotFoundException;
 import com.github.balcon.backpack.model.User;
 import com.github.balcon.backpack.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

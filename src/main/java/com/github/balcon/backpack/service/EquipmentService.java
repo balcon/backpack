@@ -4,7 +4,7 @@ import com.github.balcon.backpack.dto.EquipmentFullReadDto;
 import com.github.balcon.backpack.dto.EquipmentReadDto;
 import com.github.balcon.backpack.dto.EquipmentWriteDto;
 import com.github.balcon.backpack.dto.mapper.EquipmentMapper;
-import com.github.balcon.backpack.exceprion.ResourceNotFoundException;
+import com.github.balcon.backpack.exception.ResourceNotFoundException;
 import com.github.balcon.backpack.model.Backpack;
 import com.github.balcon.backpack.model.Equipment;
 import com.github.balcon.backpack.model.User;

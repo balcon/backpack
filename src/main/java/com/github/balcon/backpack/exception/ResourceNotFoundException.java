@@ -1,4 +1,4 @@
-package com.github.balcon.backpack.exceprion;
+package com.github.balcon.backpack.exception;
 
 import lombok.RequiredArgsConstructor;
 

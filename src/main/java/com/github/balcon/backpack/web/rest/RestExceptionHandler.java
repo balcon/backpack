@@ -1,7 +1,8 @@
 package com.github.balcon.backpack.web.rest;
 
-import com.github.balcon.backpack.exceprion.ResourceNotFoundException;
+import com.github.balcon.backpack.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +28,12 @@ public class RestExceptionHandler {
                 .collect(Collectors.toMap(FieldError::getField,
                         fieldError -> Optional.ofNullable(fieldError.getDefaultMessage())
                                 .orElse("Validation error")));
+    }
+
+    @ExceptionHandler(HttpMessageConversionException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String jsonParsingHandle(HttpMessageConversionException e) {
+        return e.getMessage();
     }
 }
 
