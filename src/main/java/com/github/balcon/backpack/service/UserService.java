@@ -6,6 +6,7 @@ import com.github.balcon.backpack.dto.UserReadDto;
 import com.github.balcon.backpack.dto.UserUpdateDto;
 import com.github.balcon.backpack.dto.mapper.UserMapper;
 import com.github.balcon.backpack.exception.ResourceNotFoundException;
+import com.github.balcon.backpack.logging.Logged;
 import com.github.balcon.backpack.model.User;
 import com.github.balcon.backpack.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Logged
 @Transactional(readOnly = true)
 public class UserService implements UserDetailsService {
     protected static final String RESOURCE = "User";
