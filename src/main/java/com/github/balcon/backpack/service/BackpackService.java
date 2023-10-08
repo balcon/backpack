@@ -5,7 +5,6 @@ import com.github.balcon.backpack.dto.BackpackReadDto;
 import com.github.balcon.backpack.dto.BackpackWriteDto;
 import com.github.balcon.backpack.dto.mapper.BackpackMapper;
 import com.github.balcon.backpack.exception.ResourceNotFoundException;
-import com.github.balcon.backpack.logging.Logged;
 import com.github.balcon.backpack.model.Backpack;
 import com.github.balcon.backpack.model.Equipment;
 import com.github.balcon.backpack.model.User;
@@ -21,7 +20,6 @@ import java.util.function.BiFunction;
 
 @Service
 @RequiredArgsConstructor
-@Logged
 @Transactional(readOnly = true)
 public class BackpackService {
     protected static final String RESOURCE = "Backpack";

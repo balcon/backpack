@@ -1,6 +1,5 @@
-package com.github.balcon.backpack.web.rest;
+package com.github.balcon.backpack.exception;
 
-import com.github.balcon.backpack.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.validation.BindException;
@@ -14,7 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class RestExceptionHandler {
+public class ExceptionAdvice {
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String notFoundHandle(ResourceNotFoundException e) {
@@ -34,6 +33,12 @@ public class RestExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String jsonParsingHandle(HttpMessageConversionException e) {
         return e.getMessage();
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String otherExceptionsHandle(Exception exception) {
+        return exception.getMessage();
     }
 }
 
