@@ -14,6 +14,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static com.github.balcon.backpack.web.rest.TestData.*;
@@ -29,7 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RequiredArgsConstructor
 @WithUserDetails(USER_EMAIL)
 class EquipmentControllerTest extends BaseMvcTest {
-    public static final EquipmentWriteDto writeDtoDummy = new EquipmentWriteDto("Dummy", null, 0);
+    public static final EquipmentWriteDto writeDtoDummy = EquipmentWriteDto.builder()
+            .name("Dummy").build();
 
     private final EquipmentMapper mapper;
     private final EquipmentRepository repository;
@@ -77,7 +79,11 @@ class EquipmentControllerTest extends BaseMvcTest {
         String name = "Star River 2";
         String manufacturer = "Naturehike";
         int weight = 2000;
-        EquipmentWriteDto equipmentWriteDto = new EquipmentWriteDto(name, manufacturer, weight);
+        EquipmentWriteDto equipmentWriteDto = EquipmentWriteDto.builder()
+                .name(name)
+                .manufacturer(manufacturer)
+                .properties(Map.of("Color", "Green"))
+                .weight(weight).build();
         int equipmentCount = repository.findAllByOwnerId(USER_ID).size();
 
         mockMvc.perform(post(BASE_URL)
@@ -98,7 +104,10 @@ class EquipmentControllerTest extends BaseMvcTest {
         String name = "New name";
         String manufacturer = "New Manufacturer";
         int weight = 1000;
-        EquipmentWriteDto equipmentWriteDto = new EquipmentWriteDto(name, manufacturer, weight);
+        EquipmentWriteDto equipmentWriteDto = EquipmentWriteDto.builder()
+                .name(name)
+                .manufacturer(manufacturer)
+                .weight(weight).build();
 
         mockMvc.perform(put(BASE_URL + "/" + USER_TENT_ID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -227,7 +236,11 @@ class EquipmentControllerTest extends BaseMvcTest {
         String name = "";
         String manufacturer = "";
         int weight = -10;
-        EquipmentWriteDto equipmentWriteDto = new EquipmentWriteDto(name, manufacturer, weight);
+        EquipmentWriteDto equipmentWriteDto = EquipmentWriteDto.builder()
+                .name(name)
+                .manufacturer(manufacturer)
+                .properties(Map.of("", "Grey"))
+                .weight(weight).build();
         int equipmentCount = repository.findAllByOwnerId(USER_ID).size();
 
         mockMvc.perform(post(BASE_URL)
@@ -246,7 +259,10 @@ class EquipmentControllerTest extends BaseMvcTest {
         String name = "";
         String manufacturer = "";
         int weight = -10;
-        EquipmentWriteDto equipmentWriteDto = new EquipmentWriteDto(name, manufacturer, weight);
+        EquipmentWriteDto equipmentWriteDto = EquipmentWriteDto.builder()
+                .name(name)
+                .manufacturer(manufacturer)
+                .weight(weight).build();
 
         mockMvc.perform(put(BASE_URL + "/" + USER_TENT_ID)
                         .contentType(MediaType.APPLICATION_JSON)

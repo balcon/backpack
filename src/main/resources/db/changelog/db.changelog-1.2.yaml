@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0
+      author: K. Balykov
+      changes:
+        - createTable:
+            tableName: property
+            columns:
+              - column:
+                  name: equipment_id
+                  type: integer
+                  constraints:
+                    foreignKeyName: property_equipment_fk
+                    referencedTableName: equipment
+                    referencedColumnNames: id
+                    unique: true
+                    uniqueConstraintName: property_equipment_name_uk
+                    deleteCascade: true
+              - column:
+                  name: name
+                  type: varchar
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: property_equipment_name_uk
+              - column:
+                  name: property_value
+                  type: varchar
+                  constraints:
+                    nullable: false

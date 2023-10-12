@@ -17,6 +17,7 @@ public interface EquipmentMapper {
     default Equipment toEntity(EquipmentWriteDto equipmentWriteDto, Equipment equipment) {
         equipment.setName(equipmentWriteDto.name());
         equipment.setManufacturer(equipmentWriteDto.manufacturer());
+        equipment.setProperties(equipmentWriteDto.properties());
         equipment.setWeight(equipmentWriteDto.weight());
         return equipment;
     }

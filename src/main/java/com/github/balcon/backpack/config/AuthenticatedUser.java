@@ -10,7 +10,7 @@ public class AuthenticatedUser extends org.springframework.security.core.userdet
     private final Integer id;
 
     private AuthenticatedUser(User user) {
-        super(user.getName(), user.getPassword(), Collections.singleton(user.getRole()));
+        super(user.getEmail(), user.getPassword(), Collections.singleton(user.getRole()));
         this.id = user.getId();
     }
 

@@ -1,14 +1,13 @@
 package com.github.balcon.backpack.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,6 +28,13 @@ public class Equipment extends BaseEntity {
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
+
+    @Builder.Default
+    @ElementCollection
+    @CollectionTable(name = "property", joinColumns = @JoinColumn(name = "equipment_id"))
+    @MapKeyColumn(name = "name")
+    @Column(name = "property_value")
+    private Map<String, String> properties = new HashMap<>();
 
     public Equipment addBackpack(Backpack backpack) {
         backpacks.add(backpack);

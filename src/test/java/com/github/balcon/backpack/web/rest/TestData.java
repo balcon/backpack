@@ -7,6 +7,7 @@ import com.github.balcon.backpack.model.User;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
+import java.util.Map;
 
 @UtilityClass
 public class TestData {
@@ -43,6 +44,9 @@ public class TestData {
             .name("Huba Tour 2")
             .manufacturer("MSR")
             .weight(2500)
+            .properties(Map.of(
+                    "Color", "Grey",
+                    "Capacity", "2"))
             .owner(user).build();
 
     public Equipment userSleepingBag = Equipment.builder()
@@ -57,6 +61,7 @@ public class TestData {
             .name("Prolite Regular")
             .manufacturer("Therm-a-Rest")
             .weight(500)
+            .properties(Map.of("Color", "Red"))
             .owner(user).build();
 
     public Equipment adminTent = Equipment.builder()
@@ -64,6 +69,7 @@ public class TestData {
             .name("Explorer V2")
             .manufacturer("Red Fox")
             .weight(2500)
+            .properties(Map.of("Capacity", "2"))
             .owner(admin).build();
 
     public Equipment adminSleepingBag = Equipment.builder()
@@ -71,6 +77,9 @@ public class TestData {
             .name("Green Kazoo")
             .manufacturer("North Face")
             .weight(1500)
+            .properties(Map.of(
+                    "Extreme temp", "-39",
+                    "Comfort temp", "-17"))
             .owner(admin).build();
 
     public Backpack userBackpack1 = Backpack.builder()

@@ -9,6 +9,14 @@ VALUES (1, 'Huba Tour 2', 'MSR', 2500, 101),
        (4, 'Explorer V2', 'Red Fox', 2500, 100),
        (5, 'Green Kazoo', 'North Face', 1500, 100);
 
+INSERT INTO property (name, property_value, equipment_id)
+VALUES ('Color', 'Grey', 1),
+       ('Capacity', '2', 1),
+       ('Color', 'Red', 3),
+       ('Capacity', '2', 4),
+       ('Extreme temp', '-39', 5),
+       ('Comfort temp', '-17', 5);
+
 INSERT INTO backpack (id, name, owner_id)
 VALUES (50, 'Backpack 1', 101),
        (51, 'Backpack 2', 101),
