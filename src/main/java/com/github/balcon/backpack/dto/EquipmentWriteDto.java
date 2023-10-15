@@ -15,7 +15,7 @@ public record EquipmentWriteDto(@NotBlank @Size(max = 64) String name,
                                 @Min(0) int weight) {
 
     @SuppressWarnings("all")
-    public static class EquipmentWriteDtoBBuilder {
+    public static class EquipmentWriteDtoBuilder {
         private Map<String, String> properties = new HashMap<>();
     }
 }

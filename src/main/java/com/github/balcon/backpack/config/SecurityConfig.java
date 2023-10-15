@@ -1,8 +1,10 @@
 package com.github.balcon.backpack.config;
 
 import com.github.balcon.backpack.model.Role;
+import com.github.balcon.backpack.web.rest.user.ProfileController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -17,6 +19,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(security -> security
+                        .requestMatchers(HttpMethod.POST, ProfileController.BASE_URL).anonymous()
                         .requestMatchers(API_URL + "/admin/**").hasAuthority(Role.ADMIN.getAuthority())
                         .anyRequest().hasAnyAuthority(Role.USER.getAuthority(), Role.ADMIN.getAuthority()))
                 .httpBasic(Customizer.withDefaults())

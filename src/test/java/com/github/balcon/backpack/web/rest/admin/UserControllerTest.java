@@ -173,7 +173,6 @@ class UserControllerTest extends BaseMvcTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.name").hasJsonPath())
                 .andExpect(jsonPath("$.role").hasJsonPath());
-        // TODO: 9/30/2023 Role enum validation
 
         User updatedUser = repository.findById(USER_ID).orElseThrow();
 

@@ -4,6 +4,7 @@ import com.github.balcon.backpack.config.AuthenticatedUser;
 import com.github.balcon.backpack.dto.UserCreateDto;
 import com.github.balcon.backpack.dto.UserReadDto;
 import com.github.balcon.backpack.dto.UserUpdateDto;
+import com.github.balcon.backpack.dto.UserUpdateProfileDto;
 import com.github.balcon.backpack.dto.mapper.UserMapper;
 import com.github.balcon.backpack.exception.ResourceNotFoundException;
 import com.github.balcon.backpack.model.User;
@@ -51,6 +52,16 @@ public class UserService implements UserDetailsService {
     public UserReadDto update(int id, UserUpdateDto userUpdateDto) {
         return repository.findById(id)
                 .map(user -> dtoMapper.toEntity(userUpdateDto, user))
+                .map(repository::saveAndFlush)
+                .map(dtoMapper::toReadDto)
+                .orElseThrow(() -> new ResourceNotFoundException(RESOURCE, id));
+    }
+
+    // TODO: 15.10.2023 Refactor duplicate code
+    @Transactional
+    public UserReadDto update(int id, UserUpdateProfileDto userUpdateProfileDto) {
+        return repository.findById(id)
+                .map(user -> dtoMapper.toEntity(userUpdateProfileDto, user))
                 .map(repository::saveAndFlush)
                 .map(dtoMapper::toReadDto)
                 .orElseThrow(() -> new ResourceNotFoundException(RESOURCE, id));
